@@ -261,6 +261,7 @@ class SignUpViewController: UIViewController {
                 case .success(let user):
                     UserDefaults.standard.setValue(user.email, forKey: "email")
                     UserDefaults.standard.setValue(user.username, forKey: "username")
+                    UserDefaults.standard.set(user.profileImage, forKey: "profileImage")
                     
                     self?.navigationController?.popViewController(animated: true)
                     self?.completion?()

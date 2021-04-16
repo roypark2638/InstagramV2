@@ -18,9 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         
-        AuthManager.shared.signOut { (success) in
-            
-        }
+//        AuthManager.shared.signOut { (success) in
+//            
+//        }
         
         return true
     }
