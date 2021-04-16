@@ -35,6 +35,22 @@ extension UIView {
     }
 }
 
+// Allow us to cleanly take dictionary to in from different object that conforms to the Codeable.
+extension Decodable {
+    init?(with dictionary: [String: Any]) {
+        // convert to the data
+        guard let data = try? JSONSerialization.data(
+            withJSONObject: dictionary,
+            options: .prettyPrinted
+        ) else {
+            return nil
+        }
+        guard let result = try? JSONDecoder().decode(Self.self, from: data) else {
+            return nil
+        }
+        self = result
+    }
+}
 
 extension Encodable {
     // You can now map stuff from the database directly into model instead of doing a unnecessary step
