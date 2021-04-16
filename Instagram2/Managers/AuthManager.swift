@@ -15,6 +15,7 @@ final class AuthManager {
     
     enum AuthError: Error {
         case failedSigningUp
+        case failedSigningIn
     }
     
     private let auth = Auth.auth()
@@ -34,7 +35,33 @@ final class AuthManager {
         password: String,
         completion: @escaping (Result<User, Error>) -> Void
     ) {
-        
+        DatabaseManager.shared.findUser(with: email) { [weak self] (user) in
+            guard let user = user else {
+                completion(.failure(AuthError.failedSigningIn))
+                return
+            }
+            
+            self?.auth.signIn(
+                withEmail: email,
+                password: password) { (result, error) in
+                guard result == nil, error != nil else {
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    else {
+                        completion(.failure(AuthError.failedSigningIn))
+                        return
+                    }
+                }
+                
+                UserDefaults.standard.setValue(user.email, forKey: "email")
+                UserDefaults.standard.setValue(user.username, forKey: "username")
+                UserDefaults.standard.setValue(user.profileImage, forKey: "profileImage")
+                completion(.success(user))
+            }
+            
+        }
     }
     
     /// Signing the user with the email method
@@ -97,9 +124,11 @@ final class AuthManager {
     public func signOut(completion: @escaping (Bool) -> Void) {
         do {
             try auth.signOut()
+            completion(true)
         }
         catch {
-            
+            print(error.localizedDescription)
+            completion(false)
         }
     }
 }

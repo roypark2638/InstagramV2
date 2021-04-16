@@ -27,4 +27,32 @@ final class DatabaseManager {
             completion(error == nil)
         }
     }
+    
+    public func findUser(with email: String, completion: @escaping (User?) -> Void) {
+        let reference = database.collection("users")
+        reference.getDocuments { (snapshot, error) in
+            guard let users = snapshot?.documents.compactMap({ User(with: $0.data()) }), error == nil else {
+                completion(nil)
+                return
+            }
+            
+            let user = users.first(where: { $0.email == email })
+            completion(user)
+        }
+    }
+    
+//    public func getCurrentUser(username: String, completion: @escaping (Bool) -> Void) {
+//        let reference = database.document("users/\(username)")
+//        guard let data = username.asDictionary() else {
+//            completion(false)
+//            return
+//        }
+//
+//        reference.getDocument(source: reference) { (snapshot, error) in
+//
+//        }
+//        reference.setData(data) { (error) in
+//            completion(error == nil)
+//        }
+//    }
 }

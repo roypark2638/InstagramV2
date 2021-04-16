@@ -67,6 +67,16 @@ class SignInViewController: UIViewController {
         button.layer.masksToBounds = true
         return button
     }()
+    
+//    private let spinner: UIActivityIndicatorView = {
+//        let spinner = UIActivityIndicatorView()
+//        spinner.startAnimating()
+//        spinner.isHidden = true
+//        spinner.color = .lightGray
+//        spinner.hidesWhenStopped = true
+//        spinner.style = .large
+//        return spinner
+//    }()
 
     // MARK: Lifecycle
     
@@ -94,6 +104,7 @@ class SignInViewController: UIViewController {
         view.addSubview(createAccountButton)
         view.addSubview(termsButton)
         view.addSubview(privacyButton)
+//        view.addSubview(spinner)
     }
     
     private func configureLayouts() {
@@ -152,7 +163,6 @@ class SignInViewController: UIViewController {
         createAccountButton.addTarget(self, action: #selector(didTapCreateAccount), for: .touchUpInside)
         termsButton.addTarget(self, action: #selector(didTapTerms), for: .touchUpInside)
         privacyButton.addTarget(self, action: #selector(didTapPrivacy), for: .touchUpInside)
-        
     }
     
 
@@ -167,6 +177,30 @@ class SignInViewController: UIViewController {
               password.count >= 6 else { return }
         
         // Sign in with AuthManager
+        AuthManager.shared.signIn(
+            email: email,
+            password: password) { [weak self] (result) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    let vc = TabBarViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    self?.present(vc, animated: true, completion: nil)
+                    
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    let alert = UIAlertController(
+                        title: "Oops",
+                        message: "Something went wrong with the log-in. Please try again with the valid input.",
+                        preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(
+                                        title: "Dismiss",
+                                        style: .cancel,
+                                        handler: nil))
+                    self?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
     }
     
     @objc private func didTapCreateAccount() {
@@ -209,7 +243,7 @@ extension SignInViewController: UITextFieldDelegate {
         }
         else if textField == passwordField {
             textField.resignFirstResponder()
-            didTapCreateAccount()
+            didTapSignIn()
         }
         return true
     }
