@@ -34,3 +34,18 @@ extension UIView {
         frame.size.height
     }
 }
+
+
+extension Encodable {
+    // You can now map stuff from the database directly into model instead of doing a unnecessary step
+    func asDictionary() -> [String: Any]? {
+        guard let data = try? JSONEncoder().encode(self) else { return nil }
+        guard let json = try? JSONSerialization.jsonObject(
+            with: data,
+            options: .allowFragments
+        ) as? [String: Any] else {
+            return nil
+        }
+        return json
+    }
+}

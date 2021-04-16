@@ -13,7 +13,11 @@ final class AuthManager {
     
     private init() {}
     
-    let auth = Auth.auth()
+    enum AuthError: Error {
+        case failedSigningUp
+    }
+    
+    private let auth = Auth.auth()
     
     public var isSignedIn: Bool {
         return auth.currentUser != nil
@@ -47,7 +51,45 @@ final class AuthManager {
         profilePicture: Data?,
         completion: @escaping (Result<User, Error>) -> Void
     ) {
-        
+        let newUser = User(username: username, email: email, profileImage: profilePicture)
+        // Create Account
+        auth.createUser(
+            withEmail: email,
+            password: password) { (result, error) in
+            guard result != nil, error == nil else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                else {
+                    completion(.failure(AuthError.failedSigningUp))
+                }
+                
+                return
+            }
+            
+            DatabaseManager.shared.createUser(newUser: newUser) { success in
+                if success {
+                    StorageManager.shared.uploadProfilePicture(
+                        user: newUser) { (uploadSuccess) in
+                        if uploadSuccess {
+                            if uploadSuccess {
+                                completion(.success(newUser))
+                            }
+                            else {
+                                // user didn't set the profile image.
+                            }
+                        }
+                        else {
+                            
+                        }
+                    }
+                }
+                else {
+                    completion(.failure(AuthError.failedSigningUp))
+                }
+                return
+            }
+        }
     }
     
     /// Signing out the user from the app

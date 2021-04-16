@@ -78,7 +78,7 @@ class SignInViewController: UIViewController {
         emailField.delegate = self
         passwordField.delegate = self
         addSubviews()
-        addButtonActions()
+        addButtonActions()        
     }
     
     override func viewDidLayoutSubviews() {
@@ -171,9 +171,13 @@ class SignInViewController: UIViewController {
     
     @objc private func didTapCreateAccount() {
         let vc = SignUpViewController()
-//        vc.completion = {
-//
-//        }
+        vc.completion = { [weak self] in
+            DispatchQueue.main.async {
+                let vc = TabBarViewController()
+                vc.modalPresentationStyle = .fullScreen
+                self?.present(vc, animated: true, completion: nil)
+            }
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     

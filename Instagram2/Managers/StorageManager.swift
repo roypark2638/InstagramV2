@@ -13,5 +13,19 @@ final class StorageManager {
     
     private init() {}
     
-    let storage = Storage.storage()
+    private let storage = Storage.storage().reference()
+    
+    public func uploadProfilePicture(
+        user: User,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let data = user.profileImage else {
+            completion(false)
+            return
+        }
+        
+        storage.child("\(user.username)/profile_picture.png").putData(data, metadata: nil) { (_, error) in
+            completion(error == nil)
+        }
+    }
 }
