@@ -20,7 +20,7 @@ final class StorageManager {
         completion: @escaping (Bool) -> Void
     ) {
         guard let data = user.profileImage else {
-            completion(false)
+//            completion(false)
             return
         }
         

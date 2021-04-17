@@ -44,7 +44,7 @@ final class AuthManager {
             self?.auth.signIn(
                 withEmail: email,
                 password: password) { (result, error) in
-                guard result == nil, error != nil else {
+                guard result != nil, error == nil else {
                     if let error = error {
                         completion(.failure(error))
                         return
@@ -57,7 +57,7 @@ final class AuthManager {
                 
                 UserDefaults.standard.setValue(user.email, forKey: "email")
                 UserDefaults.standard.setValue(user.username, forKey: "username")
-                UserDefaults.standard.setValue(user.profileImage, forKey: "profileImage")
+                UserDefaults.standard.set(user.profileImage, forKey: "profileImage")
                 completion(.success(user))
             }
             
@@ -86,35 +86,30 @@ final class AuthManager {
             guard result != nil, error == nil else {
                 if let error = error {
                     completion(.failure(error))
+                    return
                 }
                 else {
                     completion(.failure(AuthError.failedSigningUp))
+                    return
                 }
-                
-                return
             }
             
             DatabaseManager.shared.createUser(newUser: newUser) { success in
                 if success {
                     StorageManager.shared.uploadProfilePicture(
-                        user: newUser) { (uploadSuccess) in
+                        user: newUser
+                    ) { uploadSuccess in
                         if uploadSuccess {
-                            if uploadSuccess {
-                                completion(.success(newUser))
-                            }
-                            else {
-                                // user didn't set the profile image.
-                            }
+                            completion(.success(newUser))
                         }
                         else {
-                            
+                            completion(.failure(AuthError.failedSigningUp))
                         }
                     }
                 }
                 else {
                     completion(.failure(AuthError.failedSigningUp))
                 }
-                return
             }
         }
     }

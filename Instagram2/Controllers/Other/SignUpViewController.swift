@@ -248,6 +248,7 @@ class SignUpViewController: UIViewController {
             present(alert, animated: true, completion: nil)
             return
         }
+        print("sign up password\(password)")
         
         let data = profileImageView.image?.pngData()
         // Sign up with AuthManager

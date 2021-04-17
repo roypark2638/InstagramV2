@@ -43,20 +43,7 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        showSignedOutUIIfNeeded()
     }
-    
-//    private func showSignedOutUIIfNeeded() {
-//        guard AuthManager.shared.isSignedIn else {
-//            return
-//        }
-        
-        // Show Signed Out UI
-//        let vc = SignInViewController()
-//        let navVC = UINavigationController(rootViewController: vc)
-//        navVC.modalPresentationStyle = .fullScreen
-//        present(navVC, animated: true)
-//    }
     
     private func configureNavigationBar() {
         if isCurrentUser {

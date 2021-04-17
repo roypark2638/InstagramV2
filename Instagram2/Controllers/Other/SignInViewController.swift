@@ -171,7 +171,7 @@ class SignInViewController: UIViewController {
         passwordField.resignFirstResponder()
         
         guard let email = emailField.text,
-              let password = emailField.text,
+              let password = passwordField.text,
               !email.trimmingCharacters(in: .whitespaces).isEmpty,
               !password.trimmingCharacters(in: .whitespaces).isEmpty,
               password.count >= 6 else { return }

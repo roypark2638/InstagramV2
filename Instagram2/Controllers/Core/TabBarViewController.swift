@@ -11,7 +11,7 @@ class TabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print(AuthManager.shared.isSignedIn)
         guard let email = UserDefaults.standard.string(forKey: "email"),
               let username = UserDefaults.standard.string(forKey: "username")
         else {
