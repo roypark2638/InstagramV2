@@ -44,6 +44,12 @@
 		97E203DE262A893200FE5807 /* PostCaptionCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203DD262A893200FE5807 /* PostCaptionCollectionViewCellViewModel.swift */; };
 		97E203E1262A895500FE5807 /* PostDateTimeCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203E0262A895500FE5807 /* PostDateTimeCollectionViewCellViewModel.swift */; };
 		97E203E4262A996200FE5807 /* HomeFeedCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203E3262A996200FE5807 /* HomeFeedCellType.swift */; };
+		97E203FF262B627E00FE5807 /* PosterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203FE262B627E00FE5807 /* PosterCollectionViewCell.swift */; };
+		97E20402262B62EC00FE5807 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E20401262B62EC00FE5807 /* PostCollectionViewCell.swift */; };
+		97E20405262B630500FE5807 /* PostActionsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E20404262B630500FE5807 /* PostActionsCollectionViewCell.swift */; };
+		97E20409262B634000FE5807 /* PostLikesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E20408262B634000FE5807 /* PostLikesCollectionViewCell.swift */; };
+		97E2040C262B634700FE5807 /* PostCaptionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2040B262B634700FE5807 /* PostCaptionCollectionViewCell.swift */; };
+		97E2040F262B634D00FE5807 /* PostDateTimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2040E262B634D00FE5807 /* PostDateTimeCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +94,12 @@
 		97E203DD262A893200FE5807 /* PostCaptionCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCaptionCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		97E203E0262A895500FE5807 /* PostDateTimeCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDateTimeCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		97E203E3262A996200FE5807 /* HomeFeedCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedCellType.swift; sourceTree = "<group>"; };
+		97E203FE262B627E00FE5807 /* PosterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterCollectionViewCell.swift; sourceTree = "<group>"; };
+		97E20401262B62EC00FE5807 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
+		97E20404262B630500FE5807 /* PostActionsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostActionsCollectionViewCell.swift; sourceTree = "<group>"; };
+		97E20408262B634000FE5807 /* PostLikesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostLikesCollectionViewCell.swift; sourceTree = "<group>"; };
+		97E2040B262B634700FE5807 /* PostCaptionCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCaptionCollectionViewCell.swift; sourceTree = "<group>"; };
+		97E2040E262B634D00FE5807 /* PostDateTimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDateTimeCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +176,7 @@
 		97E203492628DC7500FE5807 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				97E203FD262B626500FE5807 /* HomeCells */,
 				97E203A926290D5F00FE5807 /* SignInHeaderView.swift */,
 				97E203AF262921FE00FE5807 /* IGTextField.swift */,
 			);
@@ -243,6 +256,19 @@
 				97E203722628DE8800FE5807 /* SettingsViewController.swift */,
 			);
 			path = Other;
+			sourceTree = "<group>";
+		};
+		97E203FD262B626500FE5807 /* HomeCells */ = {
+			isa = PBXGroup;
+			children = (
+				97E203FE262B627E00FE5807 /* PosterCollectionViewCell.swift */,
+				97E20401262B62EC00FE5807 /* PostCollectionViewCell.swift */,
+				97E20404262B630500FE5807 /* PostActionsCollectionViewCell.swift */,
+				97E20408262B634000FE5807 /* PostLikesCollectionViewCell.swift */,
+				97E2040B262B634700FE5807 /* PostCaptionCollectionViewCell.swift */,
+				97E2040E262B634D00FE5807 /* PostDateTimeCollectionViewCell.swift */,
+			);
+			path = HomeCells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -360,10 +386,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				97E2036A2628DE7500FE5807 /* CaptionViewController.swift in Sources */,
+				97E20409262B634000FE5807 /* PostLikesCollectionViewCell.swift in Sources */,
 				97E2035F2628DE4A00FE5807 /* TabBarViewController.swift in Sources */,
 				97E2037F2628DEBE00FE5807 /* Notification.swift in Sources */,
 				97E203882628DED800FE5807 /* StorageManager.swift in Sources */,
 				97E2036D2628DE7A00FE5807 /* ListViewController.swift in Sources */,
+				97E20402262B62EC00FE5807 /* PostCollectionViewCell.swift in Sources */,
 				97E203702628DE7F00FE5807 /* PostViewController.swift in Sources */,
 				97E203562628DE1E00FE5807 /* NotificationsViewController.swift in Sources */,
 				97E203522628DE1800FE5807 /* ExploreViewController.swift in Sources */,
@@ -389,9 +417,13 @@
 				97E203632628DE5E00FE5807 /* SignInViewController.swift in Sources */,
 				97E203AD26290E8C00FE5807 /* Extensions.swift in Sources */,
 				97E2035C2628DE2700FE5807 /* ProfileViewController.swift in Sources */,
+				97E2040F262B634D00FE5807 /* PostDateTimeCollectionViewCell.swift in Sources */,
 				97E2038E2628DEE400FE5807 /* HapticsManager.swift in Sources */,
+				97E203FF262B627E00FE5807 /* PosterCollectionViewCell.swift in Sources */,
 				97E2031E2628DB9500FE5807 /* SceneDelegate.swift in Sources */,
+				97E20405262B630500FE5807 /* PostActionsCollectionViewCell.swift in Sources */,
 				97E203592628DE2300FE5807 /* CameraViewController.swift in Sources */,
+				97E2040C262B634700FE5807 /* PostCaptionCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

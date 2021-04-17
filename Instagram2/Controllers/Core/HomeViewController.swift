@@ -44,12 +44,12 @@ class HomeViewController: UIViewController {
             .poster(
                 viewModel: PosterCollectionViewCellViewModel(
                     username: "roypark",
-                    profilePictureURL: URL(string: "https://www.apple.com")!
+                    profilePictureURL: URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!
                 )
             ),
             .post(
                 viewModel: PostCollectionViewCellViewModel(
-                    postURL: URL(string: "https://www.apple.com")!
+                    postURL: URL(string: "https://iosacademy.io/assets/images/courses/swiftui.png")!
                 )
             ),
             .actions(
