@@ -162,17 +162,42 @@ extension HomeViewController {
         collectionView.dataSource = self
         collectionView.backgroundColor = .systemBackground
         collectionView.register(
-            UICollectionViewCell.self,
-            forCellWithReuseIdentifier: "cell")
+            PosterCollectionViewCell.self,
+            forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
+        
+        collectionView.register(
+            PostCollectionViewCell.self,
+            forCellWithReuseIdentifier: PostCollectionViewCell.identifier)
+        
+        collectionView.register(
+            PostActionsCollectionViewCell.self,
+            forCellWithReuseIdentifier: PostActionsCollectionViewCell.identifier)
+                
+        collectionView.register(
+            PostLikesCollectionViewCell.self,
+            forCellWithReuseIdentifier: PostLikesCollectionViewCell.identifier)
+        
+        collectionView.register(
+            PostCaptionCollectionViewCell.self,
+            forCellWithReuseIdentifier: PostCaptionCollectionViewCell.identifier)
+        
+        collectionView.register(
+            PostDateTimeCollectionViewCell.self,
+            forCellWithReuseIdentifier: PostDateTimeCollectionViewCell.identifier)
         self.collectionView = collectionView
     }
 }
 
-// MARK: - UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewCompositionalLayout
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+// MARK: - UICollectionViewDelegate
+extension HomeViewController: UICollectionViewDelegate {
+}
+
+// MARK: - UICollectionViewDataSource
+extension HomeViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return viewModels.count
     }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModels[section].count
     }
@@ -181,25 +206,70 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let cellType = viewModels[indexPath.section][indexPath.row]
         switch cellType {
         case .poster(let viewModel):
-            break
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: PosterCollectionViewCell.identifier,
+                for: indexPath
+            ) as? PosterCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.contentView.backgroundColor = colors[indexPath.row]
+            return cell
         case .post(let viewModel):
-            break
+            guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PostCollectionViewCell.identifier,
+                    for: indexPath
+            ) as? PostCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            return cell
         case .actions(let viewModel):
-            break
+            guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PostActionsCollectionViewCell.identifier,
+                    for: indexPath
+            ) as? PostActionsCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.contentView.backgroundColor = colors[indexPath.row]
+            return cell
         case .likeCount(let viewModel):
-            break
+            guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PostLikesCollectionViewCell.identifier,
+                    for: indexPath
+            ) as? PostLikesCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.contentView.backgroundColor = colors[indexPath.row]
+            return cell
         case .caption(let viewModel):
-            break
+            guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PostCaptionCollectionViewCell.identifier,
+                    for: indexPath
+            ) as? PostCaptionCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.contentView.backgroundColor = colors[indexPath.row]
+            return cell
         case .timestamp(let viewModel):
-            break
+            guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PostDateTimeCollectionViewCell.identifier,
+                    for: indexPath
+            ) as? PostDateTimeCollectionViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            cell.contentView.backgroundColor = colors[indexPath.row]
+            return cell
         }
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "cell",
-            for: indexPath)
-        cell.contentView.backgroundColor = colors.randomElement()
-        
-        return cell
     }
-    
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
     
 }
