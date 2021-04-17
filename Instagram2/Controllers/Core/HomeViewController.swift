@@ -19,6 +19,8 @@ class HomeViewController: UIViewController {
     // MARK: - Subviews
     
     private var collectionView: UICollectionView?
+    
+    private var viewModels = [[HomeFeedCellType]]()
 
     // MARK: - Lifecycle
     
@@ -27,16 +29,62 @@ class HomeViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Instagram"
         configureCollectionView()
-        addSubviews()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         configureLayouts()
+        fetchPosts()
     }
     
     // MARK: - Methods
+    private func fetchPosts() {
+       // mock data
+        let postData: [HomeFeedCellType] = [
+            .poster(
+                viewModel: PosterCollectionViewCellViewModel(
+                    username: "roypark",
+                    profilePictureURL: URL(string: "https://www.apple.com")!
+                )
+            ),
+            .post(
+                viewModel: PostCollectionViewCellViewModel(
+                    postURL: URL(string: "https://www.apple.com")!
+                )
+            ),
+            .actions(
+                viewModel: PostActionCollectionViewCellViewModel(
+                    isLiked: false
+                )
+            ),
+            .caption(
+                viewModel: PostCaptionCollectionViewCellViewModel(
+                    username: "jasmine",
+                    caption: "This is great post!"
+                )
+            ),
+            .timestamp(
+                viewModel: PostDateTimeCollectionViewCellViewModel(
+                    date: Date()
+                )
+            )
+        ]
+        
+        viewModels.append(postData)
+        collectionView?.reloadData()
+    }
     
+    
+    private func configureLayouts() {
+        collectionView?.frame = view.bounds
+    }
+
+    
+    let colors: [UIColor] = [.red, .yellow, .blue, .brown, .cyan, .gray, .magenta, .green, .systemPink, .purple]
+}
+
+// MARK: - HomeViewController Extension
+extension HomeViewController {
     private func configureCollectionView() {
         let sectionHeight: CGFloat = 240+view.width
         
@@ -118,30 +166,33 @@ class HomeViewController: UIViewController {
             forCellWithReuseIdentifier: "cell")
         self.collectionView = collectionView
     }
-    
-    private func addSubviews() {
-    }
-    
-    private func configureLayouts() {
-        collectionView?.frame = view.bounds
-    }
-
-    
-    let colors: [UIColor] = [.red, .yellow, .blue, .brown, .cyan, .gray, .magenta, .green, .systemPink, .purple]
 }
 
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewCompositionalLayout
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return viewModels.count
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return viewModels[section].count
     }
     
-    
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cellType = viewModels[indexPath.section][indexPath.row]
+        switch cellType {
+        case .poster(let viewModel):
+            break
+        case .post(let viewModel):
+            break
+        case .actions(let viewModel):
+            break
+        case .likeCount(let viewModel):
+            break
+        case .caption(let viewModel):
+            break
+        case .timestamp(let viewModel):
+            break
+        }
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "cell",
             for: indexPath)

@@ -43,6 +43,7 @@
 		97E203DB262A88FF00FE5807 /* PostLikesCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203DA262A88FF00FE5807 /* PostLikesCollectionViewCellViewModel.swift */; };
 		97E203DE262A893200FE5807 /* PostCaptionCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203DD262A893200FE5807 /* PostCaptionCollectionViewCellViewModel.swift */; };
 		97E203E1262A895500FE5807 /* PostDateTimeCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203E0262A895500FE5807 /* PostDateTimeCollectionViewCellViewModel.swift */; };
+		97E203E4262A996200FE5807 /* HomeFeedCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203E3262A996200FE5807 /* HomeFeedCellType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		97E203DA262A88FF00FE5807 /* PostLikesCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostLikesCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		97E203DD262A893200FE5807 /* PostCaptionCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCaptionCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		97E203E0262A895500FE5807 /* PostDateTimeCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDateTimeCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
+		97E203E3262A996200FE5807 /* HomeFeedCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedCellType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +177,7 @@
 				97E203782628DEB500FE5807 /* Post.swift */,
 				97E2037B2628DEBA00FE5807 /* Relationship.swift */,
 				97E2037E2628DEBE00FE5807 /* Notification.swift */,
+				97E203E3262A996200FE5807 /* HomeFeedCellType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -375,6 +378,7 @@
 				97E203732628DE8800FE5807 /* SettingsViewController.swift in Sources */,
 				97E203B0262921FE00FE5807 /* IGTextField.swift in Sources */,
 				97E203D5262A88A800FE5807 /* PostCollectionViewCellViewModel.swift in Sources */,
+				97E203E4262A996200FE5807 /* HomeFeedCellType.swift in Sources */,
 				97E203DB262A88FF00FE5807 /* PostLikesCollectionViewCellViewModel.swift in Sources */,
 				97E203852628DED100FE5807 /* DatabaseManager.swift in Sources */,
 				97E2037C2628DEBA00FE5807 /* Relationship.swift in Sources */,
