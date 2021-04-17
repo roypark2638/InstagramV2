@@ -54,13 +54,18 @@ class HomeViewController: UIViewController {
             ),
             .actions(
                 viewModel: PostActionCollectionViewCellViewModel(
-                    isLiked: false
+                    isLiked: true
+                )
+            ),
+            .likeCount(
+                viewModel: PostLikesCollectionViewCellViewModel(
+                    likers: ["roypark", "jasmine"]
                 )
             ),
             .caption(
                 viewModel: PostCaptionCollectionViewCellViewModel(
-                    username: "jasmine",
-                    caption: "This is great post!"
+                    username: "roypark",
+                    caption: "first post caption"
                 )
             ),
             .timestamp(
@@ -78,9 +83,6 @@ class HomeViewController: UIViewController {
     private func configureLayouts() {
         collectionView?.frame = view.bounds
     }
-
-    
-    let colors: [UIColor] = [.red, .yellow, .blue, .brown, .cyan, .gray, .magenta, .green, .systemPink, .purple]
 }
 
 // MARK: - HomeViewController Extension
@@ -213,7 +215,6 @@ extension HomeViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            cell.contentView.backgroundColor = colors[indexPath.row]
             return cell
         case .post(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(
@@ -232,7 +233,6 @@ extension HomeViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            cell.contentView.backgroundColor = colors[indexPath.row]
             return cell
         case .likeCount(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(
@@ -242,7 +242,6 @@ extension HomeViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            cell.contentView.backgroundColor = colors[indexPath.row]
             return cell
         case .caption(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(
@@ -252,7 +251,6 @@ extension HomeViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            cell.contentView.backgroundColor = colors[indexPath.row]
             return cell
         case .timestamp(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(
@@ -262,7 +260,6 @@ extension HomeViewController: UICollectionViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            cell.contentView.backgroundColor = colors[indexPath.row]
             return cell
         }
     }
