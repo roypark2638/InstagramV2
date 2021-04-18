@@ -44,6 +44,12 @@ class TabBarViewController: UITabBarController {
         nav4.navigationBar.tintColor = .label
         nav5.navigationBar.tintColor = .label
         
+        if #available(iOS 14.0, *) {
+            nav3.navigationItem.backButtonDisplayMode = .minimal
+        } else {
+            // Fallback on earlier versions
+            nav3.navigationItem.backButtonTitle = ""            
+        }
         
         // Define tab items
         nav1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
