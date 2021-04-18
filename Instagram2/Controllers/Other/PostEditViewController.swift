@@ -67,9 +67,9 @@ class PostEditViewController: UIViewController {
             action: #selector(didTapNext)
         )
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+4) {
-            self.filterImage(image: self.image)
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now()+4) {
+//            self.filterImage(image: self.image)
+//        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -114,7 +114,8 @@ class PostEditViewController: UIViewController {
     }
     
     @objc private func didTapNext() {
-        let vc = CaptionViewController(image: image)
+        guard let current = imageView.image else { return }
+        let vc = CaptionViewController(image: current)
         vc.title = "Add Caption"
         navigationController?.pushViewController(vc, animated: true)
     }
