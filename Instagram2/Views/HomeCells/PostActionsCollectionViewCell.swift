@@ -7,10 +7,21 @@
 
 import UIKit
 
+protocol PostActionsCollectionViewCellDelegate: AnyObject {
+    func PostActionsCollectionViewCellDidTapLike(_ cell: PostActionsCollectionViewCell,
+                                                 isLiked: Bool)
+    func PostActionsCollectionViewCellDidTapComment(_ cell: PostActionsCollectionViewCell)
+    func PostActionsCollectionViewCellDidTapShare(_ cell: PostActionsCollectionViewCell)
+}
+
 final class PostActionsCollectionViewCell: UICollectionViewCell {
     static let identifier = "PostActionsCollectionViewCell"
     
-    private let heartButton: UIButton = {
+    weak var delegate: PostActionsCollectionViewCellDelegate?
+    
+    private var isLiked = false
+    
+    private let likeButton: UIButton = {
         let button = UIButton()
         button.tintColor = .label
         let image = UIImage(systemName: "heart", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
@@ -42,7 +53,7 @@ final class PostActionsCollectionViewCell: UICollectionViewCell {
         contentView.clipsToBounds = true
         contentView.backgroundColor = .systemBackground
         
-        contentView.addSubview(heartButton)
+        contentView.addSubview(likeButton)
         contentView.addSubview(commentButton)
         contentView.addSubview(shareButton)
         addButtonActions()
@@ -55,7 +66,7 @@ final class PostActionsCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         let imageSize: CGFloat = 30
-        heartButton.frame = CGRect(
+        likeButton.frame = CGRect(
             x: 10,
             y: (contentView.height-imageSize)/2,
             width: imageSize,
@@ -63,7 +74,7 @@ final class PostActionsCollectionViewCell: UICollectionViewCell {
         )
         
         commentButton.frame = CGRect(
-            x: heartButton.right + 10,
+            x: likeButton.right + 10,
             y: (contentView.height-imageSize)/2,
             width: imageSize,
             height: imageSize
@@ -82,9 +93,9 @@ final class PostActionsCollectionViewCell: UICollectionViewCell {
     }
     
     private func addButtonActions() {
-        heartButton.addTarget(
+        likeButton.addTarget(
             self,
-            action: #selector(didTapHeart),
+            action: #selector(didTapLike),
             for: .touchUpInside
         )
         commentButton.addTarget(
@@ -100,25 +111,42 @@ final class PostActionsCollectionViewCell: UICollectionViewCell {
     }
     
     public func configure(with viewModel: PostActionCollectionViewCellViewModel) {
+        isLiked = viewModel.isLiked
         if viewModel.isLiked {
             let image = UIImage(
                 systemName: "heart.fill",
                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
-            heartButton.setImage(image, for: .normal)
-            heartButton.tintColor = .systemRed
+            likeButton.setImage(image, for: .normal)
+            likeButton.tintColor = .systemRed
         }
     }
     
     
-    @objc private func didTapHeart() {
+    @objc private func didTapLike() {
+        if self.isLiked {
+            let image = UIImage(
+                systemName: "heart",
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
+            likeButton.setImage(image, for: .normal)
+            likeButton.tintColor = .label
+        }
+        else {
+            let image = UIImage(
+                systemName: "heart.fill",
+                withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
+            likeButton.setImage(image, for: .normal)
+            likeButton.tintColor = .systemRed
+        }
         
+        delegate?.PostActionsCollectionViewCellDidTapLike(self, isLiked: !isLiked)
+        self.isLiked = !isLiked
     }
     
     @objc private func didTapComment() {
-        
+        delegate?.PostActionsCollectionViewCellDidTapComment(self)
     }
     
     @objc private func didTapShare() {
-        
+        delegate?.PostActionsCollectionViewCellDidTapShare(self)
     }
 }

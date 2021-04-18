@@ -8,8 +8,16 @@
 import UIKit
 import SDWebImage
 
+protocol PosterCollectionViewCellDelegate: AnyObject {
+    func posterCollectionViewCellDidTapUsername(_ cell: PosterCollectionViewCell)
+    func posterCollectionViewCellDidTapProfileImage(_ cell: PosterCollectionViewCell)
+    func posterCollectionViewCellDidTapOption(_ cell: PosterCollectionViewCell)
+}
+
 final class PosterCollectionViewCell: UICollectionViewCell {
     static let identifier = "PosterCollectionViewCell"
+    
+    weak var delegate: PosterCollectionViewCellDelegate?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -39,10 +47,21 @@ final class PosterCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.clipsToBounds = true
         contentView.backgroundColor = .systemBackground
-        
         contentView.addSubview(profileImageView)
         contentView.addSubview(usernameLabel)
         contentView.addSubview(optionButton)
+        let usernameTap = UITapGestureRecognizer(
+            target: self,
+            action: #selector(didTapUsername))
+        usernameLabel.isUserInteractionEnabled = true
+        usernameLabel.addGestureRecognizer(usernameTap)
+        
+        let profileTap = UITapGestureRecognizer(
+            target: self,
+            action: #selector(didTapProfileImage))
+        profileImageView.isUserInteractionEnabled = true
+        profileImageView.addGestureRecognizer(profileTap)
+        
         optionButton.addTarget(
             self,
             action: #selector(didTapOption),
@@ -99,6 +118,14 @@ final class PosterCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func didTapOption() {
-        
+        delegate?.posterCollectionViewCellDidTapOption(self)
+    }
+    
+    @objc private func didTapUsername() {
+        delegate?.posterCollectionViewCellDidTapUsername(self)
+    }
+    
+    @objc private func didTapProfileImage() {
+        delegate?.posterCollectionViewCellDidTapProfileImage(self)
     }
 }

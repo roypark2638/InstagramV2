@@ -37,7 +37,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
-        title = "Profile"
+        title = user.username
         configureNavigationBar()
     }
     

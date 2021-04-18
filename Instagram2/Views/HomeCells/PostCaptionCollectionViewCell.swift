@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol PostCaptionCollectionViewCellDelegate: AnyObject {
+    func postCaptionCollectionViewCellDidTapCaption(_ cell: PostCaptionCollectionViewCell)
+}
+
 final class PostCaptionCollectionViewCell: UICollectionViewCell {
     static let identifier = "PostCaptionCollectionViewCell"
+    
+    weak var delegate: PostCaptionCollectionViewCellDelegate?
     
     private let label: UILabel = {
         let label = UILabel()
@@ -20,6 +26,11 @@ final class PostCaptionCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.clipsToBounds = true
         contentView.backgroundColor = .systemBackground
+        
+        let tap = UITapGestureRecognizer(
+            target: self, action: #selector(didTapCaption))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
         
         contentView.addSubview(label)
     }
@@ -49,5 +60,9 @@ final class PostCaptionCollectionViewCell: UICollectionViewCell {
     
     public func configure(with viewModel: PostCaptionCollectionViewCellViewModel) {
         label.text = "\(viewModel.username): \(viewModel.caption ?? "")"
+    }
+    
+    @objc private func didTapCaption() {
+        delegate?.postCaptionCollectionViewCellDidTapCaption(self)
     }
 }
