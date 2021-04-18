@@ -28,6 +28,24 @@ final class DatabaseManager {
         }
     }
     
+    public func createPost(newPost: Post, completion: @escaping (Bool) -> Void) {
+        guard let username = UserDefaults.standard.string(forKey: "username")
+        else {
+            completion(false)
+            return
+        }
+        
+        let reference = database.document("users/\(username)/posts/\(newPost.id)")
+        guard let data = newPost.asDictionary() else {
+            completion(false)
+            return
+        }
+        
+        reference.setData(data) { error in
+            completion(error == nil)
+        }
+    }
+    
     public func findUser(with email: String, completion: @escaping (User?) -> Void) {
         let reference = database.collection("users")
         reference.getDocuments { (snapshot, error) in
@@ -40,6 +58,8 @@ final class DatabaseManager {
             completion(user)
         }
     }
+    
+    
     
 //    public func getCurrentUser(username: String, completion: @escaping (Bool) -> Void) {
 //        let reference = database.document("users/\(username)")

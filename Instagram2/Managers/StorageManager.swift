@@ -28,4 +28,20 @@ final class StorageManager {
             completion(error == nil)
         }
     }
+    
+    public func uploadPost(
+        data: Data?,
+        id: String,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let data = data,
+              let username = UserDefaults.standard.string(forKey: "username")
+              else { return }
+        
+        storage.child("\(username)/posts/\(id).png").putData(
+            data,
+            metadata: nil) { (_, error) in
+            completion(error == nil)
+        }
+    }
 }

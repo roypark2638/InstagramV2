@@ -71,6 +71,17 @@ class CaptionViewController: UIViewController {
         )
     }
     
+    private func createNewPostID() -> String? {
+        let timeStamp = Date().timeIntervalSince1970
+        let randomNumber = Int.random(in: 0...1000)
+        guard let username = UserDefaults.standard.string(forKey: "username")
+        else {
+            return nil
+        }
+        
+        return "\(username)_\(randomNumber)_\(timeStamp)"
+    }
+    
     @objc private func didTapPost() {
         textView.resignFirstResponder()
         // get the caption out
@@ -79,9 +90,49 @@ class CaptionViewController: UIViewController {
             caption = ""
         }
         
-        // upload photo, update database
+        // Generate post ID
+        guard let postID = createNewPostID(),
+              let stringDate = String.date(from: Date())
+        else {
+            print("failed to generate post ID")
+            return }
+        
+        // Upload Post
+        StorageManager.shared.uploadPost(
+            data: image.pngData(),
+            id: postID) { success in
+            guard success else {
+                print("error uploading to the storage")
+                return
+            }
+                
+            // Update Database
+            let newPost = Post(
+                id: postID,
+                caption: caption,
+                postedDate: stringDate,
+                likers: []
+            )
+            DatabaseManager.shared.createPost(
+                newPost: newPost) { [weak self] (uploaded) in
+                DispatchQueue.main.async {
+                    if uploaded {
+                        self?.tabBarController?.tabBar.isHidden = false
+                        self?.tabBarController?.selectedIndex = 0
+                        self?.navigationController?.popToRootViewController(animated: false)
+                    }
+                    else {
+                        // failed to upload to the database
+                        print("failed to upload to the database")
+                    }
+                }
+            }
+        }
+        
+        
         
     }
+        
 }
 
 extension CaptionViewController: UITextViewDelegate {

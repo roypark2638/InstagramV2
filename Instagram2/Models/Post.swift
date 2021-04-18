@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct Post: Codable {
+    // id will point to the storage reference where the photo is
+    let id: String
+    let caption: String?
+    let postedDate: String
+    var likers: [String]
+}
