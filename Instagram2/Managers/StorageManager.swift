@@ -32,38 +32,40 @@ final class StorageManager {
     public func uploadPost(
         data: Data?,
         id: String,
-        completion: @escaping (Bool) -> Void
+        completion: @escaping (URL?) -> Void
     ) {
         guard let data = data,
               let username = UserDefaults.standard.string(forKey: "username")
               else { return }
-        
-        storage.child("\(username)/posts/\(id).png").putData(
+        let reference = storage.child("\(username)/posts/\(id).png")
+        reference.putData(
             data,
             metadata: nil) { (_, error) in
-            completion(error == nil)
+            reference.downloadURL { (url, _) in
+                completion(url)
+            }
         }
     }
     
-    public func downloadURL(
-        for post: Post,
-        completion: @escaping (URL?) -> Void
-    ) {
-        guard let reference = post.storageReference else {
-            completion(nil)
-            return
-        }
-        
-        storage.child(reference).downloadURL { (url, error) in
-            guard error == nil else {
-                print("error downloadURL from Storage \(error!.localizedDescription)")
-                completion(nil)
-                return
-            }
-            completion(url)
-            return
-        }
-    }
+//    public func downloadURL(
+//        for post: Post,
+//        completion: @escaping (URL?) -> Void
+//    ) {
+//        guard let reference = post.storageReference else {
+//            completion(nil)
+//            return
+//        }
+//        
+//        storage.child(reference).downloadURL { (url, error) in
+//            guard error == nil else {
+//                print("error downloadURL from Storage \(error!.localizedDescription)")
+//                completion(nil)
+//                return
+//            }
+//            completion(url)
+//            return
+//        }
+//    }
     
     public func profilePictureURL(
         for username: String,

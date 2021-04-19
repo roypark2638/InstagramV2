@@ -92,32 +92,10 @@ class HomeViewController: UIViewController {
         user: User,
         completion: @escaping (Bool) -> Void
     ) {
-        let group = DispatchGroup()
-        group.enter()
-        group.enter()
-        
-        var postURL: URL?
-        var profilePictureURL: URL?
-        StorageManager.shared.downloadURL(for: model) { [weak self] (url) in
-            defer {
-                group.leave()
-            }
-            postURL = url
-        }
-        
         StorageManager.shared.profilePictureURL(
-            for: user.username) { [weak self] (url) in
-            defer {
-                group.leave()
-            }
-            profilePictureURL = url
-        }
-        
-        group.notify(queue: .main) {
-            guard let postURL = postURL,
-                  let profilePhotoURL = profilePictureURL
-            else {
-                fatalError("Failed to get urls")
+            for: user.username) { [weak self] profilePictureURL in
+            guard let postURL = URL(string: model.postURLString),
+                  let profilePhotoURL = profilePictureURL else {
                 return
             }
             
@@ -156,7 +134,7 @@ class HomeViewController: UIViewController {
                 )
             ]
             
-            self.viewModels.append(postData)
+            self?.viewModels.append(postData)
             completion(true)
         }
     }
