@@ -44,4 +44,34 @@ final class StorageManager {
             completion(error == nil)
         }
     }
+    
+    public func downloadURL(
+        for post: Post,
+        completion: @escaping (URL?) -> Void
+    ) {
+        guard let reference = post.storageReference else {
+            completion(nil)
+            return
+        }
+        
+        storage.child(reference).downloadURL { (url, error) in
+            guard error == nil else {
+                print("error downloadURL from Storage \(error!.localizedDescription)")
+                completion(nil)
+                return
+            }
+            completion(url)
+            return
+        }
+    }
+    
+    public func profilePictureURL(
+        for username: String,
+        completion: @escaping (URL?) -> Void
+    ) {
+        storage.child("\(username)/profile_picture.png").downloadURL { (url, error) in
+            completion(url)
+            return
+        }
+    }
 }

@@ -26,7 +26,7 @@ class TabBarViewController: UITabBarController {
         )
 
         // Define VCs
-        let home = HomeViewController()
+        let home = HomeViewController(user: currentUser)
         let explore = ExploreViewController()
         let camera = CameraViewController()
         let notification = NotificationsViewController()
@@ -48,7 +48,7 @@ class TabBarViewController: UITabBarController {
             nav3.navigationItem.backButtonDisplayMode = .minimal
         } else {
             // Fallback on earlier versions
-            nav3.navigationItem.backButtonTitle = ""            
+            nav3.navigationItem.backButtonTitle = ""
         }
         
         // Define tab items

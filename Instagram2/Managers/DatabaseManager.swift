@@ -46,6 +46,25 @@ final class DatabaseManager {
         }
     }
     
+    public func posts(
+        for user: User,
+        completion: @escaping (Result<[Post], Error>) -> Void
+    ) {
+        let reference = database.collection("users")
+            .document(user.username)
+            .collection("posts")
+        reference.getDocuments { (snapshot, error) in
+            guard let posts = snapshot?.documents.compactMap({
+                Post(with: $0.data())
+            }),
+                  error == nil else {
+                return
+            }
+            
+            completion(.success(posts))
+        }
+    }
+    
     public func findUser(with email: String, completion: @escaping (User?) -> Void) {
         let reference = database.collection("users")
         reference.getDocuments { (snapshot, error) in

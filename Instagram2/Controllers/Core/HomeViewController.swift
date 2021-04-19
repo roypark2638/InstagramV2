@@ -21,6 +21,17 @@ class HomeViewController: UIViewController {
     private var collectionView: UICollectionView?
     
     private var viewModels = [[HomeFeedCellType]]()
+    
+    private let user: User
+    
+    init(user: User) {
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
     // MARK: - Lifecycle
     
@@ -39,55 +50,124 @@ class HomeViewController: UIViewController {
     
     // MARK: - Methods
     private func fetchPosts() {
-       // mock data
-        let postData: [HomeFeedCellType] = [
-            .poster(
-                viewModel: PosterCollectionViewCellViewModel(
-                    username: "roypark",
-                    profilePictureURL: URL(string: "https://iosacademy.io/assets/images/brand/icon.jpg")!
-                )
-            ),
-            .post(
-                viewModel: PostCollectionViewCellViewModel(
-                    postURL: URL(string: "https://iosacademy.io/assets/images/courses/swiftui.png")!
-                )
-            ),
-            .actions(
-                viewModel: PostActionCollectionViewCellViewModel(
-                    isLiked: true
-                )
-            ),
-            .likeCount(
-                viewModel: PostLikesCollectionViewCellViewModel(
-                    likers: ["roypark", "jasmine"]
-                )
-            ),
-            .caption(
-                viewModel: PostCaptionCollectionViewCellViewModel(
-                    username: "roypark",
-                    caption: "first post caption"
-                )
-            ),
-            .timestamp(
-                viewModel: PostDateTimeCollectionViewCellViewModel(
-                    date: Date()
-                )
-            )
-        ]
+        let currentUser = user
         
-        viewModels.append(postData)
-        collectionView?.reloadData()
+        DatabaseManager.shared.posts(for: user) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let posts):
+                    
+                    let group = DispatchGroup()
+                    
+                    posts.forEach { (model) in
+                        group.enter()
+                        
+                        self?.createViewModel(
+                            model: model,
+                            user: currentUser,
+                            completion: { (success) in
+                                defer {
+                                    group.leave()
+                                }
+                                if !success {
+                                    print("Failed to create ViewModel")
+                                }
+                            })
+                    }
+                    
+                    group.notify(queue: .main) {
+                        self?.collectionView?.reloadData()
+                    }
+                    
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
     }
     
+    private func createViewModel(
+        model: Post,
+        user: User,
+        completion: @escaping (Bool) -> Void
+    ) {
+        let group = DispatchGroup()
+        group.enter()
+        group.enter()
+        
+        var postURL: URL?
+        var profilePictureURL: URL?
+        StorageManager.shared.downloadURL(for: model) { [weak self] (url) in
+            defer {
+                group.leave()
+            }
+            postURL = url
+        }
+        
+        StorageManager.shared.profilePictureURL(
+            for: user.username) { [weak self] (url) in
+            defer {
+                group.leave()
+            }
+            profilePictureURL = url
+        }
+        
+        group.notify(queue: .main) {
+            guard let postURL = postURL,
+                  let profilePhotoURL = profilePictureURL
+            else {
+                fatalError("Failed to get urls")
+                return
+            }
+            
+            let postData: [HomeFeedCellType] = [
+                .poster(
+                    viewModel: PosterCollectionViewCellViewModel(
+                        username: user.username,
+                        profilePictureURL: profilePhotoURL
+                    )
+                ),
+                .post(
+                    viewModel: PostCollectionViewCellViewModel(
+                        postURL: postURL
+                    )
+                ),
+                .actions(
+                    viewModel: PostActionCollectionViewCellViewModel(
+                        isLiked: false
+                    )
+                ),
+                .likeCount(
+                    viewModel: PostLikesCollectionViewCellViewModel(
+                        likers: []
+                    )
+                ),
+                .caption(
+                    viewModel: PostCaptionCollectionViewCellViewModel(
+                        username: user.username,
+                        caption: model.caption
+                    )
+                ),
+                .timestamp(
+                    viewModel: PostDateTimeCollectionViewCellViewModel(
+                        date: DateFormatter.formatter.date(from: model.postedDate) ?? Date()
+                    )
+                )
+            ]
+            
+            self.viewModels.append(postData)
+            completion(true)
+        }
+    }
     
-    private func configureLayouts() {
+    func configureLayouts() {
         collectionView?.frame = view.bounds
     }
 }
 
 // MARK: - HomeViewController Extension
 extension HomeViewController {
-    private func configureCollectionView() {
+    func configureCollectionView() {
         let sectionHeight: CGFloat = 240+view.width
         let postHeight: CGFloat = 10
         
