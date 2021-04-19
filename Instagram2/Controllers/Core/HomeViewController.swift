@@ -40,12 +40,13 @@ class HomeViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Instagram"
         configureCollectionView()
+        fetchPosts()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         configureLayouts()
-        fetchPosts()
+
     }
     
     // MARK: - Methods
