@@ -10,6 +10,8 @@ import UIKit
 class ExploreViewController: UIViewController {
     // MARK: - Subviews
     
+    private var posts = [Post]()
+    
     private let searchVC = UISearchController(
         searchResultsController: SearchResultsViewController()
     )
@@ -102,6 +104,7 @@ class ExploreViewController: UIViewController {
         view.addSubview(collectionView)
         collectionView.delegate = self
         collectionView.dataSource = self
+        fetchData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -112,6 +115,14 @@ class ExploreViewController: UIViewController {
 
     // MARK: - Methods
     
+    private func fetchData() {
+        DatabaseManager.shared.explorePosts { [weak self] (posts) in
+            DispatchQueue.main.async {
+                self?.posts = posts
+                self?.collectionView.reloadData()
+            }
+        }
+    }
 }
 
 // MARK: - UISearchResultsUpdating
@@ -144,21 +155,35 @@ extension ExploreViewController: SearchResultsViewControllerDelegate {
     }
 }
 
-// MARK: -
+// MARK: - UICollectionViewDataSource
 
-extension ExploreViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ExploreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 30
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: PhotoCollectionViewCell.identifier,
             for: indexPath) as? PhotoCollectionViewCell
         else {
-            return UICollectionViewCell()
+            fatalError()
         }
-        cell.configure(with: UIImage(named: "story1"))
+        
+        let model = posts[indexPath.row]
+        cell.configure(with: URL(string:model.postURLString))
+//        cell.configure(with: model.postURLString)
+//        cell.configure(with: UIImage(named: "story1"))
         return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension ExploreViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+        let vc = PostViewController(post: post)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

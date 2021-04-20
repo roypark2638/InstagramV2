@@ -98,7 +98,46 @@ final class DatabaseManager {
         }
     }
     
-    
+    public func explorePosts(completion: @escaping ([Post]) -> Void) {
+        let userRef = database.collection("users")
+        userRef.getDocuments { (snapshot, error) in
+            guard let users = snapshot?.documents.compactMap({
+                User(with: $0.data())
+            }),
+            error == nil else {
+                completion([])
+                return
+            }
+            
+            let group = DispatchGroup()
+            var aggregatePosts = [Post]()
+            
+//            let postRef = userRef.document(users[0].username).collection("posts")
+            users.forEach { (user) in
+                let username = user.username
+                let postRef = self.database.collection("users/\(username)/posts")
+                group.enter()
+                postRef.getDocuments { (snapshot, error) in
+                    
+                    defer {
+                        group.leave()
+                    }
+                    
+                    guard let posts = snapshot?.documents.compactMap({ Post(with: $0.data( ))}),
+                          error == nil else {
+                        return
+                    }
+                    
+                    
+                    aggregatePosts.append(contentsOf: posts)
+                }
+            }
+            
+            group.notify(queue: .main) {
+                completion(aggregatePosts)
+            }
+        }
+    }
     
 //    public func getCurrentUser(username: String, completion: @escaping (Bool) -> Void) {
 //        let reference = database.document("users/\(username)")

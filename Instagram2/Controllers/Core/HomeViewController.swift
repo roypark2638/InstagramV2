@@ -407,9 +407,9 @@ extension HomeViewController: PostActionsCollectionViewCellDelegate {
     
     func PostActionsCollectionViewCellDidTapComment(_ cell: PostActionsCollectionViewCell) {
         print("Did tap to comment")
-        let vc = PostViewController()
-        vc.title = "Post"
-        navigationController?.pushViewController(vc, animated: true)
+//        let vc = PostViewController()
+//        vc.title = "Post"
+//        navigationController?.pushViewController(vc, animated: true)
 
     }
     
@@ -439,8 +439,8 @@ extension HomeViewController: PostLikesCollectionViewCellDelegate {
 
 extension HomeViewController: PostCaptionCollectionViewCellDelegate {
     func postCaptionCollectionViewCellDidTapCaption(_ cell: PostCaptionCollectionViewCell) {
-        let vc = PostViewController()
-        vc.title = "Caption"
-        navigationController?.pushViewController(vc, animated: true)
+//        let vc = PostViewController()
+//        vc.title = "Caption"
+//        navigationController?.pushViewController(vc, animated: true)
     }
 }
