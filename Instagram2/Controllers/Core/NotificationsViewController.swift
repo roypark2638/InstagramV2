@@ -21,7 +21,7 @@ class NotificationsViewController: UIViewController {
     }()
     
     private let tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.isHidden = true
         tableView.register(
             LikeNotificationTableViewCell.self,
@@ -35,6 +35,8 @@ class NotificationsViewController: UIViewController {
         return tableView
     }()
     
+    private var viewModels: [NotificationCellType] = []
+    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -44,7 +46,7 @@ class NotificationsViewController: UIViewController {
         addSubviews()
         tableView.delegate = self
         tableView.dataSource = self
-        
+        mockData()
         fetchNotifications()
     }
     
@@ -67,28 +69,106 @@ class NotificationsViewController: UIViewController {
     }
     
     private func fetchNotifications() {
-        noActivityLabel.isHidden = false
+    }
+    
+    private func mockData() {
+        noActivityLabel.isHidden = true
+        tableView.isHidden = false
+        guard let postURL = URL(
+                string: "https://iosacademy.io/assets/images/courses/swiftui.png"),
+                let iconURL = URL(
+                    string: "https://iosacademy.io/assets/images/brand/icon.jpg"
+        ) else {
+            return
+        }
+        
+        
+        viewModels = [
+            .like(
+                viewModel:
+                    LikeNotificationCellViewModel(
+                        username: "roypark hc",
+                        profilePictureURL: iconURL,
+                        postURL: postURL
+                    )
+            ),
+            .comment(
+                viewModel:
+                    CommentNotificationCellViewModel(
+                        username: "roypark hc",
+                        profilePictureURL: iconURL,
+                        postURL: postURL
+                    )
+            ),
+            .follow(
+                viewModel:
+                    FollowNotificationCellViewModel(
+                        username: "roypark hc",
+                        profilePictureURL: iconURL,
+                        isCurrentUserFollowing: true
+                    )
+            )
+        ]
+        
+        tableView.reloadData()
     }
     
     // MARK: - Objc Methods
     
     
-
+    
 }
 
 // MARK: - UITableViewDataSource
 
 extension NotificationsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return viewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: "cell",
-            for: indexPath
-        )
-        return cell
+        let cellType = viewModels[indexPath.row]
+        
+        switch cellType {
+        
+        case .follow(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: FollowNotificationTableViewCell.identifier,
+                for: indexPath
+            ) as? FollowNotificationTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            
+            return cell
+            
+        case .like(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: LikeNotificationTableViewCell.identifier,
+                for: indexPath
+            ) as? LikeNotificationTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            
+            return cell
+            
+        case .comment(let viewModel):
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: CommentNotificationTableViewCell.identifier,
+                for: indexPath
+            ) as? CommentNotificationTableViewCell else {
+                fatalError()
+            }
+            cell.configure(with: viewModel)
+            
+            return cell
+            
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
     }
 }
 
