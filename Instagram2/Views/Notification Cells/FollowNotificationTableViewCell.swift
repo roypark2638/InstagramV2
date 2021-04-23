@@ -7,8 +7,20 @@
 
 import UIKit
 
+protocol FollowNotificationTableViewCellDelegate: AnyObject {
+    func followNotificationTableViewCell(_ cell: FollowNotificationTableViewCell,
+                                         didTapButton isFollowing: Bool,
+                                         viewModel: FollowNotificationCellViewModel)
+}
+
 class FollowNotificationTableViewCell: UITableViewCell {
     static let identifier = "FollowNotificationTableViewCell"
+    
+    weak var delegate: FollowNotificationTableViewCellDelegate?
+    
+    private var isFollowing = false
+    
+    private var viewModel: FollowNotificationCellViewModel?
     
     private let profilePictureImageView: UIImageView = {
         let imageView = UIImageView()
@@ -29,6 +41,7 @@ class FollowNotificationTableViewCell: UITableViewCell {
         let button = UIButton()
         button.layer.cornerRadius = 4
         button.layer.masksToBounds = true
+//        button.titleLabel?.adjustsFontSizeToFitWidth = true
         return button
     }()
     
@@ -41,6 +54,7 @@ class FollowNotificationTableViewCell: UITableViewCell {
         contentView.addSubview(label)
         contentView.addSubview(followButton)
         followButton.addTarget(self, action: #selector(didTapFollow), for: .touchUpInside)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -62,14 +76,14 @@ class FollowNotificationTableViewCell: UITableViewCell {
         
         followButton.sizeToFit()
         followButton.frame = CGRect(
-            x: contentView.width - followButton.width - 20,
+            x: contentView.width - followButton.width - 30,
             y: (contentView.height - followButton.height)/2,
-            width: followButton.width + 10,
+            width: followButton.width + 15,
             height: followButton.height
         )
         
         let labelSize = label.sizeThatFits(CGSize(
-            width: contentView.width-profilePictureImageView.width-followButton.width-40,
+            width: contentView.width-profilePictureImageView.width-followButton.width-45,
             height: contentView.height
         )
         )
@@ -91,16 +105,27 @@ class FollowNotificationTableViewCell: UITableViewCell {
     }
     
     public func configure(with viewModel: FollowNotificationCellViewModel) {
+        self.viewModel = viewModel
         label.text = viewModel.username + " started following you."
         profilePictureImageView.sd_setImage(
             with: viewModel.profilePictureURL,
             completed: nil)
-        followButton.setTitle(viewModel.isCurrentUserFollowing ? "Unfollow" : "Follow", for: .normal)
-        followButton.backgroundColor = viewModel.isCurrentUserFollowing ? .systemBackground : .systemBlue
-        followButton.setTitleColor(viewModel.isCurrentUserFollowing ? .label : .white, for: .normal)
+        isFollowing = viewModel.isCurrentUserFollowing
+        updateButton()
+    }
+    
+    private func updateButton() {
+        isFollowing = !isFollowing
+        followButton.setTitle(isFollowing ? "Unfollow" : "Follow", for: .normal)
+        followButton.backgroundColor = isFollowing ? .black : .systemBlue
+        followButton.setTitleColor(isFollowing ? .white : .white, for: .normal)
     }
     
     @objc private func didTapFollow() {
-        
+        guard let viewModel = viewModel else { return }
+        delegate?.followNotificationTableViewCell(self,
+                                                  didTapButton: !isFollowing,
+                                                  viewModel: viewModel)
+        updateButton()
     }
 }

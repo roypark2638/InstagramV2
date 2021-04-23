@@ -37,6 +37,8 @@ class NotificationsViewController: UIViewController {
     
     private var viewModels: [NotificationCellType] = []
     
+    private var models: [IGNotification] = []
+    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -113,6 +115,17 @@ class NotificationsViewController: UIViewController {
         tableView.reloadData()
     }
     
+    func openPost(with index: Int, username: String, model: IGNotification) {
+        // prevent we accidentally grab higher index.
+        guard index < models.count else {
+            return
+        }
+        
+        let model = models[index]
+        let username = username
+        guard let postID = model.postID else { return }
+    }
+    
     // MARK: - Objc Methods
     
     
@@ -139,7 +152,7 @@ extension NotificationsViewController: UITableViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
-            
+            cell.delegate = self
             return cell
             
         case .like(let viewModel):
@@ -150,6 +163,7 @@ extension NotificationsViewController: UITableViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
+            cell.delegate = self
             
             return cell
             
@@ -161,6 +175,7 @@ extension NotificationsViewController: UITableViewDataSource {
                 fatalError()
             }
             cell.configure(with: viewModel)
+            cell.delegate = self
             
             return cell
             
@@ -171,9 +186,102 @@ extension NotificationsViewController: UITableViewDataSource {
         return 70
     }
 }
-
+// MARK: - Actions
 // MARK: - UITableViewDelegate
 
 extension NotificationsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let cellType = viewModels[indexPath.row]
+        let username: String
+        switch cellType {
+        case .follow(let viewModel):
+            username = viewModel.username
+            
+        case .like(let viewModel):
+            username = viewModel.username
+            
+        case .comment(let viewModel):
+            username = viewModel.username
+        }
+        
+        // Fix: update function to use username instead of email
+        DatabaseManager.shared.findUser(with: username) { [weak self] (user) in
+            guard let user = user else { return }
+            DispatchQueue.main.async {
+                let vc = ProfileViewController(user: user)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+}
+
+// MARK: - LikeNotificationTableViewCellDelegate
+
+extension NotificationsViewController: LikeNotificationTableViewCellDelegate {
+    func likeNotificationTableViewCell(
+        _ cell: LikeNotificationTableViewCell,
+        didTapPostWith viewModel: LikeNotificationCellViewModel
+    ) {
+        // we know models and viewModels have same length.
+        // we can derive the current index
+        guard let index = viewModels.firstIndex(where: {
+            switch $0 {
+            case .comment, .follow:
+                return false
+            case .like(let current):
+                return current == viewModel
+            }
+        }) else {
+            return
+        }
+        
+        openPost(with: index, username: viewModel.username, model: models[index])
+        
+        // Find post by id from particular
+    }
+    
     
 }
+
+// MARK: - CommentNotificationTableViewCellDelegate
+
+extension NotificationsViewController: CommentNotificationTableViewCellDelegate {
+    func commentNotificationTableViewCell(
+        _ cell: CommentNotificationTableViewCell,
+        didTapPostWith viewModel: CommentNotificationCellViewModel
+    ) {
+        guard let index = viewModels.firstIndex(where: {
+            switch $0 {
+            case .like, .follow:
+                return false
+            case .comment(let current):
+                return current == viewModel
+            }
+        }) else {
+            return
+        }
+        
+        // we are passing username because the viewModel is going to be different
+        openPost(with: index, username: viewModel.username, model: models[index])
+        
+    }
+    
+    
+}
+
+
+// MARK: - FollowNotificationTableViewCellDelegate
+
+extension NotificationsViewController: FollowNotificationTableViewCellDelegate {
+    func followNotificationTableViewCell(
+        _ cell: FollowNotificationTableViewCell,
+        didTapButton isFollowing: Bool,
+        viewModel: FollowNotificationCellViewModel
+    ) {
+        
+        
+    }
+
+}
+

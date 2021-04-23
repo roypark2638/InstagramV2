@@ -36,7 +36,7 @@
 		97E203762628DEAB00FE5807 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203752628DEAB00FE5807 /* User.swift */; };
 		97E203792628DEB500FE5807 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203782628DEB500FE5807 /* Post.swift */; };
 		97E2037C2628DEBA00FE5807 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2037B2628DEBA00FE5807 /* Relationship.swift */; };
-		97E2037F2628DEBE00FE5807 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2037E2628DEBE00FE5807 /* Notification.swift */; };
+		97E2037F2628DEBE00FE5807 /* IGNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2037E2628DEBE00FE5807 /* IGNotification.swift */; };
 		97E203822628DECB00FE5807 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203812628DECB00FE5807 /* AuthManager.swift */; };
 		97E203852628DED100FE5807 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203842628DED100FE5807 /* DatabaseManager.swift */; };
 		97E203882628DED800FE5807 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E203872628DED800FE5807 /* StorageManager.swift */; };
@@ -95,7 +95,7 @@
 		97E203752628DEAB00FE5807 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		97E203782628DEB500FE5807 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		97E2037B2628DEBA00FE5807 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
-		97E2037E2628DEBE00FE5807 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		97E2037E2628DEBE00FE5807 /* IGNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGNotification.swift; sourceTree = "<group>"; };
 		97E203812628DECB00FE5807 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		97E203842628DED100FE5807 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		97E203872628DED800FE5807 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
@@ -231,7 +231,7 @@
 				97E203752628DEAB00FE5807 /* User.swift */,
 				97E203782628DEB500FE5807 /* Post.swift */,
 				97E2037B2628DEBA00FE5807 /* Relationship.swift */,
-				97E2037E2628DEBE00FE5807 /* Notification.swift */,
+				97E2037E2628DEBE00FE5807 /* IGNotification.swift */,
 				97E203E3262A996200FE5807 /* HomeFeedCellType.swift */,
 				9716A04C2630B6B500365AEE /* NotificationCellType.swift */,
 			);
@@ -431,7 +431,7 @@
 				97E2036A2628DE7500FE5807 /* CaptionViewController.swift in Sources */,
 				97E20409262B634000FE5807 /* PostLikesCollectionViewCell.swift in Sources */,
 				97E2035F2628DE4A00FE5807 /* TabBarViewController.swift in Sources */,
-				97E2037F2628DEBE00FE5807 /* Notification.swift in Sources */,
+				97E2037F2628DEBE00FE5807 /* IGNotification.swift in Sources */,
 				97E203882628DED800FE5807 /* StorageManager.swift in Sources */,
 				97E2036D2628DE7A00FE5807 /* ListViewController.swift in Sources */,
 				9716A04D2630B6B500365AEE /* NotificationCellType.swift in Sources */,

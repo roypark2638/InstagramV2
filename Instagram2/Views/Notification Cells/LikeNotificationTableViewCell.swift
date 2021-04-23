@@ -7,8 +7,17 @@
 
 import UIKit
 
+protocol LikeNotificationTableViewCellDelegate: AnyObject {
+    func likeNotificationTableViewCell(_ cell: LikeNotificationTableViewCell,
+                                       didTapPostWith viewModel: LikeNotificationCellViewModel)
+}
+
 class LikeNotificationTableViewCell: UITableViewCell {
     static let identifier = "LikeNotificationTableViewCell"
+    
+    weak var delegate: LikeNotificationTableViewCellDelegate?
+    
+    private var viewModel: LikeNotificationCellViewModel?
     
     private let profilePictureImageView: UIImageView = {
         let imageView = UIImageView()
@@ -40,11 +49,17 @@ class LikeNotificationTableViewCell: UITableViewCell {
         contentView.addSubview(profilePictureImageView)
         contentView.addSubview(label)
         contentView.addSubview(postImageView)
+        
+        let tap = UIGestureRecognizer(target: self, action: #selector(didTapPost))
+        postImageView.isUserInteractionEnabled = true
+        postImageView.addGestureRecognizer(tap)
     }
     
     required init?(coder: NSCoder) {
         fatalError()
     }
+    
+    
     
     // MARK: - Lifecycle
     
@@ -91,11 +106,18 @@ class LikeNotificationTableViewCell: UITableViewCell {
     }
     
     public func configure(with viewModel: LikeNotificationCellViewModel) {
+        self.viewModel = viewModel
         profilePictureImageView.sd_setImage(
             with: viewModel.profilePictureURL,
             completed: nil)
         label.text = "\(viewModel.username) liked your post."
         postImageView.sd_setImage(with: viewModel.postURL,
                                   completed: nil)
+    }
+    
+    @objc private func didTapPost() {
+        guard let viewModel = viewModel else { return }
+        delegate?.likeNotificationTableViewCell(self,
+                                                didTapPostWith: viewModel)
     }
 }
