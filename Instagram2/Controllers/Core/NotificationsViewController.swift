@@ -48,7 +48,7 @@ class NotificationsViewController: UIViewController {
         addSubviews()
         tableView.delegate = self
         tableView.dataSource = self
-        mockData()
+//        mockData()
         fetchNotifications()
     }
     
@@ -71,6 +71,65 @@ class NotificationsViewController: UIViewController {
     }
     
     private func fetchNotifications() {
+        NotificationManager.shared.getNotifications { [weak self] (models) in
+            DispatchQueue.main.async {
+                self?.models = models
+                self?.createViewModels()
+            }
+            
+        }
+    }
+    
+    private func createViewModels() {
+        models.forEach { model in
+            guard let type = NotificationManager.IGType(rawValue: model.notificationType) else { return }
+            
+            let username = model.username
+            guard let profilePictureURL = URL(string:model.profilePictureURL) else { return }
+            
+            switch type {
+            case .like:
+                guard let postURL = URL(string: model.postURL ?? "" ) else {
+                    return
+                }
+                viewModels.append(
+                    .like(
+                        viewModel: LikeNotificationCellViewModel(
+                            username: username,
+                            profilePictureURL: profilePictureURL,
+                            postURL: postURL)))
+            case .comment:
+                guard let postURL = URL(string: model.postURL ?? "" ) else {
+                    return
+                }
+                viewModels.append(
+                    .comment(
+                        viewModel: CommentNotificationCellViewModel(
+                            username: username,
+                            profilePictureURL: profilePictureURL,
+                            postURL: postURL)))
+            case .follow:
+                guard let isFollowing = model.isFollowing else {
+                    return
+                }
+                viewModels.append(
+                    .follow(
+                        viewModel: FollowNotificationCellViewModel(
+                            username: username,
+                            profilePictureURL: profilePictureURL,
+                            isCurrentUserFollowing: isFollowing)))
+            }
+        }
+        
+        if viewModels.isEmpty {
+            noActivityLabel.isHidden = false
+            tableView.isHidden = true
+        }
+        else {
+            noActivityLabel.isHidden = true
+            tableView.isHidden = false
+            tableView.reloadData()
+        }
     }
     
     private func mockData() {
@@ -78,9 +137,9 @@ class NotificationsViewController: UIViewController {
         tableView.isHidden = false
         guard let postURL = URL(
                 string: "https://iosacademy.io/assets/images/courses/swiftui.png"),
-                let iconURL = URL(
-                    string: "https://iosacademy.io/assets/images/brand/icon.jpg"
-        ) else {
+              let iconURL = URL(
+                string: "https://iosacademy.io/assets/images/brand/icon.jpg"
+              ) else {
             return
         }
         
@@ -122,8 +181,8 @@ class NotificationsViewController: UIViewController {
         }
         
         let model = models[index]
-        let username = username
-        guard let postID = model.postID else { return }
+        _ = username
+        guard model.postID != nil else { return }
     }
     
     // MARK: - Objc Methods

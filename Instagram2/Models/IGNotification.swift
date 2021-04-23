@@ -8,9 +8,11 @@
 import Foundation
 
 struct IGNotification: Codable {
+    let identifier: String
     let notificationType: Int // 1: like, 2: comment, 3: follow
-    let profilePictureURL: URL
+    let profilePictureURL: String
     let username: String
+    let dateString: String
     // Follow/Unfollow
     let isFollowing: Bool?
     // Like/Comment
