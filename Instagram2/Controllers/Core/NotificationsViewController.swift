@@ -97,7 +97,8 @@ class NotificationsViewController: UIViewController {
                         viewModel: LikeNotificationCellViewModel(
                             username: username,
                             profilePictureURL: profilePictureURL,
-                            postURL: postURL)))
+                            postURL: postURL,
+                            date: model.dateString)))
             case .comment:
                 guard let postURL = URL(string: model.postURL ?? "" ) else {
                     return
@@ -107,7 +108,8 @@ class NotificationsViewController: UIViewController {
                         viewModel: CommentNotificationCellViewModel(
                             username: username,
                             profilePictureURL: profilePictureURL,
-                            postURL: postURL)))
+                            postURL: postURL,
+                            date: model.dateString)))
             case .follow:
                 guard let isFollowing = model.isFollowing else {
                     return
@@ -117,7 +119,8 @@ class NotificationsViewController: UIViewController {
                         viewModel: FollowNotificationCellViewModel(
                             username: username,
                             profilePictureURL: profilePictureURL,
-                            isCurrentUserFollowing: isFollowing)))
+                            isCurrentUserFollowing: isFollowing,
+                            date: model.dateString)))
             }
         }
         
@@ -150,7 +153,8 @@ class NotificationsViewController: UIViewController {
                     LikeNotificationCellViewModel(
                         username: "roypark hc",
                         profilePictureURL: iconURL,
-                        postURL: postURL
+                        postURL: postURL,
+                        date: "April 23"
                     )
             ),
             .comment(
@@ -158,7 +162,8 @@ class NotificationsViewController: UIViewController {
                     CommentNotificationCellViewModel(
                         username: "roypark hc",
                         profilePictureURL: iconURL,
-                        postURL: postURL
+                        postURL: postURL,
+                        date: "April 23"
                     )
             ),
             .follow(
@@ -166,7 +171,8 @@ class NotificationsViewController: UIViewController {
                     FollowNotificationCellViewModel(
                         username: "roypark hc",
                         profilePictureURL: iconURL,
-                        isCurrentUserFollowing: true
+                        isCurrentUserFollowing: true,
+                        date: "April 23"
                     )
             )
         ]
