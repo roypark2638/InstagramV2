@@ -171,7 +171,7 @@ class NotificationsViewController: UIViewController {
                     FollowNotificationCellViewModel(
                         username: "roypark hc",
                         profilePictureURL: iconURL,
-                        isCurrentUserFollowing: true,
+                        isCurrentUserFollowing: false,
                         date: "April 23"
                     )
             )
@@ -180,15 +180,38 @@ class NotificationsViewController: UIViewController {
         tableView.reloadData()
     }
     
-    func openPost(with index: Int, username: String, model: IGNotification) {
+    func openPost(with index: Int, username: String) {
         // prevent we accidentally grab higher index.
         guard index < models.count else {
             return
         }
         
         let model = models[index]
-        _ = username
-        guard model.postID != nil else { return }
+        let username = username
+        guard let postID = model.postID else { return }
+        
+        // Find post by id from target user
+        DatabaseManager.shared.getPost(
+            with: postID,
+            from: username) { [weak self] (post) in
+            DispatchQueue.main.async {
+                guard let post = post else {
+                    let alert = UIAlertController(
+                        title: "Oops..",
+                        message: "Something went wrong, can't open the post",
+                        preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(
+                                        title: "Dismiss",
+                                        style: .cancel,
+                                        handler: nil))
+                    self?.present(alert, animated: true)
+                    return
+                }
+                
+                let vc = PostViewController(post: post)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
     }
     
     // MARK: - Objc Methods
@@ -271,8 +294,11 @@ extension NotificationsViewController: UITableViewDelegate {
         }
         
         // Fix: update function to use username instead of email
-        DatabaseManager.shared.findUser(with: username) { [weak self] (user) in
-            guard let user = user else { return }
+        DatabaseManager.shared.findUser(username: username) { [weak self] (user) in
+            guard let user = user else {
+                print("error to findUser from TableViewDelegate in NotificationVC DeselectRowAt")
+                return
+            }
             DispatchQueue.main.async {
                 let vc = ProfileViewController(user: user)
                 self?.navigationController?.pushViewController(vc, animated: true)
@@ -301,9 +327,9 @@ extension NotificationsViewController: LikeNotificationTableViewCellDelegate {
             return
         }
         
-        openPost(with: index, username: viewModel.username, model: models[index])
+        openPost(with: index, username: viewModel.username)
         
-        // Find post by id from particular
+
     }
     
     
@@ -328,7 +354,7 @@ extension NotificationsViewController: CommentNotificationTableViewCellDelegate 
         }
         
         // we are passing username because the viewModel is going to be different
-        openPost(with: index, username: viewModel.username, model: models[index])
+        openPost(with: index, username: viewModel.username)
         
     }
     
@@ -344,8 +370,25 @@ extension NotificationsViewController: FollowNotificationTableViewCellDelegate {
         didTapButton isFollowing: Bool,
         viewModel: FollowNotificationCellViewModel
     ) {
-        
-        
+        let targetUsername = viewModel.username
+        print("Request follow=\(isFollowing) for user=\(targetUsername)")
+        DatabaseManager.shared.updateRelationship(
+            state: isFollowing ? .follow : .unfollow,
+            for: targetUsername) { [weak self] (success) in
+            if !success {
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(
+                        title: "Oops",
+                        message: "Failed to perform action",
+                        preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(
+                                        title: "Dismiss",
+                                        style: .cancel,
+                                        handler: nil))
+                    self?.present(alert, animated: true)
+                }
+            }
+        }
     }
 
 }

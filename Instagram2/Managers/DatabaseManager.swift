@@ -98,6 +98,19 @@ final class DatabaseManager {
         }
     }
     
+    public func findUser(username: String, completion: @escaping (User?) -> Void) {
+        let reference = database.collection("users")
+        reference.getDocuments { (snapshot, error) in
+            guard let users = snapshot?.documents.compactMap({ User(with: $0.data()) }), error == nil else {
+                completion(nil)
+                return
+            }
+            
+            let user = users.first(where: { $0.username == username })
+            completion(user)
+        }
+    }
+    
     public func explorePosts(completion: @escaping ([Post]) -> Void) {
         let userRef = database.collection("users")
         userRef.getDocuments { (snapshot, error) in
@@ -149,7 +162,11 @@ final class DatabaseManager {
             
         }
         
-        let reference = database.collection("users").document("\(username)").collection("notifications")
+        let reference = database
+            .collection("users")
+            .document(username)
+            .collection("notifications")
+        
         reference.getDocuments { (snapshot, error) in
             guard let notifications = snapshot?.documents.compactMap({
                 IGNotification(with: $0.data())
@@ -176,18 +193,67 @@ final class DatabaseManager {
         reference.setData(data)
     }
     
-//    public func getCurrentUser(username: String, completion: @escaping (Bool) -> Void) {
-//        let reference = database.document("users/\(username)")
-//        guard let data = username.asDictionary() else {
-//            completion(false)
-//            return
-//        }
-//
-//        reference.getDocument(source: reference) { (snapshot, error) in
-//
-//        }
-//        reference.setData(data) { (error) in
-//            completion(error == nil)
-//        }
-//    }
+    public func getPost(
+        with identifier: String,
+        from username: String,
+        completion: @escaping (Post?) -> Void
+    ) {
+        let reference = database.collection("users")
+            .document(username)
+            .collection("posts")
+            .document(identifier)
+        reference.getDocument { (snapshot, error) in
+            guard let data = snapshot?.data(),
+                error == nil else {
+                completion(nil)
+                return
+            }
+            
+            completion(Post(with: data))
+        }
+    }
+    
+    enum RelationshipState {
+        case follow
+        case unfollow
+    }
+    
+    public func updateRelationship(
+        state: RelationshipState,
+        for targetUsername: String,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username")?.lowercased() else {
+            completion(false)
+            return
+        }
+        
+        let currentFollowing = database.collection("users")
+            .document(currentUsername)
+            .collection("following")
+        
+        let targetUserFollowers = database.collection("users")
+            .document(targetUsername)
+            .collection("followers")
+
+        
+        switch state {
+        case .unfollow:
+            // Remove follower from currentUser following list
+            currentFollowing.document(targetUsername).delete()
+            // Remove currentUser from targetUser follower list
+            targetUserFollowers.document(currentUsername).delete()
+            
+            completion(true)
+        
+        case .follow:
+            // Add follower from currentUser following list
+            currentFollowing.document(targetUsername).setData(["valid": "1"])
+            // Add currentUser from targetUser follower list
+            targetUserFollowers.document(currentUsername).setData(["valid": "1"])
+            completion(true)
+        
+        }
+    }
 }
+
