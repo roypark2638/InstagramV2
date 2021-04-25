@@ -60,7 +60,7 @@ class LikeNotificationTableViewCell: UITableViewCell {
         contentView.addSubview(postImageView)
         contentView.addSubview(dateLabel)
 
-        let tap = UIGestureRecognizer(target: self, action: #selector(didTapPost))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapPost))
         postImageView.isUserInteractionEnabled = true
         postImageView.addGestureRecognizer(tap)
     }
