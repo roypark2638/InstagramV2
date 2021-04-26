@@ -252,7 +252,7 @@ extension ProfileViewController: UICollectionViewDataSource {
             headerView.configure(with: viewModel)
             headerView.countContainerView.delegate = self
         }
-        
+        headerView.delegate = self
         return headerView
     }
 }
@@ -301,4 +301,66 @@ extension ProfileViewController: ProfileHeaderCountViewDelegate {
     }
     
     
+}
+
+extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
+    func profileHeaderCollectionReusableView(
+        _ header: ProfileHeaderCollectionReusableView
+    ) {
+        guard isCurrentUser else { return } // allowing only current user's profile
+        
+        let actionSheet = UIAlertController(title: "Change Profile", message: "Update your profile photo", preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Choose From Photo Library", style: .default, handler: { [weak self] (_) in
+            DispatchQueue.main.async {
+                let picker = UIImagePickerController()
+                picker.sourceType = .photoLibrary
+                picker.allowsEditing = true
+                picker.delegate = self
+                self?.present(picker, animated: true)
+            }
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { [weak self] (_) in
+            DispatchQueue.main.async {
+                let picker = UIImagePickerController()
+                picker.sourceType = .camera
+                picker.allowsEditing = true
+                picker.delegate = self
+                self?.present(picker, animated: true)
+            }
+        }))
+        
+        present(actionSheet, animated: true, completion: nil)
+    }
+}
+
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
+            return
+        }
+        
+        StorageManager.shared.uploadProfilePicture(
+            username: user.username,
+            data: image.pngData()
+        ) { [weak self] (success) in
+            if success {
+                // doing this on the background cuz fetchProfileInfo is on the main thread.
+                print("Successfully updated to the storage")
+                self?.headerViewModel = nil
+                self?.posts = []
+                self?.fetchProfileInfo()
+            }
+            else {
+                print("failed to update the profile picture to storage")
+            }
+        }
+        
+        
+    }
 }
