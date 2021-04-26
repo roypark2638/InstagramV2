@@ -45,12 +45,6 @@ class TabBarViewController: UITabBarController {
         nav5.navigationBar.tintColor = .label
         
         if #available(iOS 14.0, *) {
-            nav1.navigationItem.backButtonDisplayMode = .minimal
-            nav2.navigationItem.backButtonDisplayMode = .minimal
-            nav3.navigationItem.backButtonDisplayMode = .minimal
-            nav4.navigationItem.backButtonDisplayMode = .minimal
-            nav5.navigationItem.backButtonDisplayMode = .minimal
-            
             home.navigationItem.backButtonDisplayMode = .minimal
             explore.navigationItem.backButtonDisplayMode = .minimal
             camera.navigationItem.backButtonDisplayMode = .minimal
