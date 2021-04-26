@@ -21,6 +21,8 @@
 		97C5CFF72636467F00EDB63E /* ProfileHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C5CFF62636467F00EDB63E /* ProfileHeaderViewModel.swift */; };
 		97C5CFFA263649B300EDB63E /* ProfileHeaderCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C5CFF9263649B300EDB63E /* ProfileHeaderCountView.swift */; };
 		97C5CFFD26364DAE00EDB63E /* ProfileHeaderCountViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C5CFFC26364DAE00EDB63E /* ProfileHeaderCountViewViewModel.swift */; };
+		97C5D0002636A2CF00EDB63E /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C5CFFF2636A2CF00EDB63E /* UserInfo.swift */; };
+		97C5D0032636A6D100EDB63E /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C5D0022636A6D100EDB63E /* EditProfileViewController.swift */; };
 		97E2031C2628DB9500FE5807 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2031B2628DB9500FE5807 /* AppDelegate.swift */; };
 		97E2031E2628DB9500FE5807 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2031D2628DB9500FE5807 /* SceneDelegate.swift */; };
 		97E203202628DB9500FE5807 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E2031F2628DB9500FE5807 /* HomeViewController.swift */; };
@@ -82,6 +84,8 @@
 		97C5CFF62636467F00EDB63E /* ProfileHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderViewModel.swift; sourceTree = "<group>"; };
 		97C5CFF9263649B300EDB63E /* ProfileHeaderCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCountView.swift; sourceTree = "<group>"; };
 		97C5CFFC26364DAE00EDB63E /* ProfileHeaderCountViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCountViewViewModel.swift; sourceTree = "<group>"; };
+		97C5CFFF2636A2CF00EDB63E /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
+		97C5D0022636A6D100EDB63E /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		97E203182628DB9500FE5807 /* Instagram2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instagram2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97E2031B2628DB9500FE5807 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		97E2031D2628DB9500FE5807 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -244,6 +248,7 @@
 				97E2037E2628DEBE00FE5807 /* IGNotification.swift */,
 				97E203E3262A996200FE5807 /* HomeFeedCellType.swift */,
 				9716A04C2630B6B500365AEE /* NotificationCellType.swift */,
+				97C5CFFF2636A2CF00EDB63E /* UserInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -308,6 +313,7 @@
 				97E203722628DE8800FE5807 /* SettingsViewController.swift */,
 				979E5848262CC79300FDC0AE /* PostEditViewController.swift */,
 				97718C37262E3D8700286DB8 /* SearchResultsViewController.swift */,
+				97C5D0022636A6D100EDB63E /* EditProfileViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -466,6 +472,7 @@
 				97E203AA26290D5F00FE5807 /* SignInHeaderView.swift in Sources */,
 				97E203732628DE8800FE5807 /* SettingsViewController.swift in Sources */,
 				97718C38262E3D8700286DB8 /* SearchResultsViewController.swift in Sources */,
+				97C5D0032636A6D100EDB63E /* EditProfileViewController.swift in Sources */,
 				97C5CFFD26364DAE00EDB63E /* ProfileHeaderCountViewViewModel.swift in Sources */,
 				9716A04A2630B59200365AEE /* NotificationManager.swift in Sources */,
 				97E203B0262921FE00FE5807 /* IGTextField.swift in Sources */,
@@ -484,6 +491,7 @@
 				97E203632628DE5E00FE5807 /* SignInViewController.swift in Sources */,
 				97E203AD26290E8C00FE5807 /* Extensions.swift in Sources */,
 				97E2035C2628DE2700FE5807 /* ProfileViewController.swift in Sources */,
+				97C5D0002636A2CF00EDB63E /* UserInfo.swift in Sources */,
 				97E2040F262B634D00FE5807 /* PostDateTimeCollectionViewCell.swift in Sources */,
 				97E2038E2628DEE400FE5807 /* HapticsManager.swift in Sources */,
 				979E584C262CCC0300FDC0AE /* PhotoCollectionViewCell.swift in Sources */,

@@ -255,5 +255,127 @@ final class DatabaseManager {
         
         }
     }
+    
+    public func getUserCounts(
+        username: String,
+        completion: @escaping ((followers: Int, following: Int, posts: Int)) -> Void
+    ) {
+        let userReference = database.collection("users").document(username)
+        
+        var followers = 0
+        var following = 0
+        var posts = 0
+        
+        let group = DispatchGroup()
+        group.enter()
+        group.enter()
+        group.enter()
+        
+        userReference.collection("posts").getDocuments { (snapshot, error) in
+            defer {
+                group.leave()
+            }
+            guard let count = snapshot?.documents.count, error == nil else {
+                return
+            }
+            
+            posts = count
+        }
+        
+        userReference.collection("followers").getDocuments { (snapshot, error) in
+            defer {
+                group.leave()
+            }
+            guard let count = snapshot?.documents.count, error == nil else {
+                return
+            }
+            
+            followers = count
+        }
+        
+        userReference.collection("following").getDocuments { (snapshot, error) in
+            defer {
+                group.leave()
+            }
+            guard let count = snapshot?.documents.count, error == nil else {
+                return
+            }
+            
+            following = count
+        }
+        
+        group.notify(queue: .global()) {
+            let result = (followers: followers,
+                          following: following,
+                          posts: posts)
+            completion(result)
+        }
+    }
+    
+    public func isFollowing(
+        targetUsername: String,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let currentUsername = UserDefaults.standard.string(forKey: "username")?.lowercased() else {
+            completion(false)
+            return
+        }
+        let reference = database.collection("users")
+            .document(targetUsername)
+            .collection("followers")
+            .document(currentUsername)
+        
+        reference.getDocument { (snapshot, error) in
+            guard snapshot != nil, error == nil else {
+                // not following
+                completion(false)
+                return
+            }
+            // following
+            completion(true)
+            
+        }
+    }
+    
+    // MARK: - User Info
+    
+    public func getUserInfo(
+        username: String,
+        completion: @escaping (UserInfo?) -> Void
+    ) {
+        let reference = database.collection("users")
+            .document(username)
+            .collection("information")
+            .document("basic")
+        
+        reference.getDocument { (snapshot, error) in
+            guard let data = snapshot?.data(),
+                  let userInfo = UserInfo(with: data) else {
+                completion(nil)
+                return
+            }
+            completion(userInfo)
+        }
+    }
+    
+    public func setUserInfo(
+        userInfo: UserInfo,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let username = UserDefaults.standard.string(forKey: "username")?.lowercased(),
+              let data = userInfo.asDictionary() else {
+            completion(false)
+            return
+        }
+        
+        let reference = database.collection("users")
+            .document(username)
+            .collection("information")
+            .document("basic")
+        
+        reference.setData(data) { (error) in
+            completion(error == nil)
+        }
+    }
 }
 

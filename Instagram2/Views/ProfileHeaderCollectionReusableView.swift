@@ -25,6 +25,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .left
+        label.textColor = .label
         label.font = .systemFont(ofSize: 16)
         return label
     }()
@@ -33,7 +34,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+//        backgroundColor = .systemBackground
         addSubviews()
     }
     
@@ -61,12 +62,15 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
             height: imageSize
         )
         
-        bioLabel.sizeToFit()
+        let bioSize = bioLabel.sizeThatFits(
+            CGSize(
+                width: width-10,
+                height: height-imageSize-10))
         bioLabel.frame = CGRect(
             x: 5,
             y: imageView.bottom+10,
-            width: width-10,
-            height: bioLabel.height
+            width: bioSize.width,
+            height: bioSize.height
         )
     }
     
@@ -83,7 +87,14 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
     }
     
     public func configure(with viewModel: ProfileHeaderViewModel) {
-        bioLabel.text = "\(viewModel.name ?? "")\n\(viewModel.bio)"
+//        bioLabel.textColor = .label
+//        bioLabel.text = "\(viewModel.name ?? "")\n\(viewModel.bio ?? "No Bio")"
+        var text = ""
+        if let name = viewModel.name {
+            text = name + "\n"
+        }
+        text += viewModel.bio ?? "No bio"
+        bioLabel.text = text
         imageView.sd_setImage(with: viewModel.profilePictureURL, completed: nil)
         
         // Container

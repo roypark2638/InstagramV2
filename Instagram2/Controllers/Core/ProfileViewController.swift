@@ -16,6 +16,8 @@ class ProfileViewController: UIViewController {
     
     private let user: User
     
+    private var headerViewModel: ProfileHeaderViewModel?
+    
     private var isCurrentUser: Bool {
         return user.username.lowercased() == UserDefaults.standard.string(forKey: "username")?.lowercased() ?? ""
     }
@@ -55,21 +57,67 @@ class ProfileViewController: UIViewController {
     }
     
     private func fetchProfileInfo() {
+        var profilePictureURL: URL?
+        var buttonType: ProfileButtonType = .edit
+        var followers = 0
+        var following = 0
+        var posts = 0
+        var name: String?
+        var bio: String?
+        
+        let group = DispatchGroup()
+        
         // Counts (post, follower, following)
+        group.enter()
+        DatabaseManager.shared.getUserCounts(
+            username: user.username) { result in
+            defer {
+                group.leave()
+            }
+            posts = result.posts
+            followers = result.followers
+            following = result.following
+        }
         
         // Bio, name
+        DatabaseManager.shared.getUserInfo(username: user.username) { (userInfo) in
+            name = userInfo?.name
+            bio = userInfo?.bio
+        }
         
         // Profile picture url
+        group.enter()
         StorageManager.shared.profilePictureURL(for: user.username) { (url) in
-            guard let url = url else { return }
+            defer {
+                group.leave()
+            }
+            profilePictureURL = url
         }
         
         // if profile is not for current user, get follow state
         if !isCurrentUser {
             // get follow state
+            group.enter()
+            DatabaseManager.shared.isFollowing(
+                targetUsername: user.username) { (isFollowing) in
+                buttonType = .follow(isFollowing: isFollowing)
+            }
             
         }
         
+        group.notify(queue: .main) {
+            self.headerViewModel = ProfileHeaderViewModel(
+                profilePictureURL: profilePictureURL,
+                followerCount: followers,
+                followingCount: following,
+                postCount: posts,
+                buttonType: buttonType,
+                bio: bio,
+                username: self.user.username,
+                name: name
+            )
+            self.collectionView?.reloadData()
+        }
     }
     
     private func configureNavigationBar() {
@@ -177,18 +225,12 @@ extension ProfileViewController: UICollectionViewDataSource {
               ) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
-        let viewModel = ProfileHeaderViewModel(
-            profilePictureURL: nil,
-            followerCount: 100,
-            followingCount: 50,
-            postCount: 30,
-            buttonType: self.isCurrentUser ? .edit : .follow(isFollowing: true),
-            bio: "This is my first profile and hard coded.",
-            username: "asdf",
-            name: "Roy Park"
-        )
-        headerView.configure(with: viewModel)
-        headerView.countContainerView.delegate = self
+        
+        if let viewModel = headerViewModel {
+            headerView.configure(with: viewModel)
+            headerView.countContainerView.delegate = self
+        }
+        
         return headerView
     }
 }
@@ -218,7 +260,14 @@ extension ProfileViewController: ProfileHeaderCountViewDelegate {
     }
     
     func profileHeaderCountViewDidTapEditProfile(_ containerView: ProfileHeaderCountView) {
-        
+        let vc = EditProfileViewController()
+        vc.completion = { [weak self] in
+            // refetch header info
+            self?.headerViewModel = nil
+            self?.fetchProfileInfo()
+        }
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true, completion: nil)
     }
     
     func profileHeaderCountViewDidTapFollow(_ containerView: ProfileHeaderCountView) {

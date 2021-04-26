@@ -18,7 +18,7 @@ struct ProfileHeaderViewModel {
     let followingCount: Int
     let postCount: Int
     let buttonType: ProfileButtonType
-    let bio: String
+    let bio: String?
     let username: String
     let name: String?
     
