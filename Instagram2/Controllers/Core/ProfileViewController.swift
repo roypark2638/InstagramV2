@@ -18,6 +18,8 @@ class ProfileViewController: UIViewController {
     
     private var headerViewModel: ProfileHeaderViewModel?
     
+    private var posts: [Post] = []
+    
     private var isCurrentUser: Bool {
         return user.username.lowercased() == UserDefaults.standard.string(forKey: "username")?.lowercased() ?? ""
     }
@@ -45,6 +47,7 @@ class ProfileViewController: UIViewController {
         configureNavigationBar()
         configureCollectionView()
         fetchProfileInfo()
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -57,6 +60,23 @@ class ProfileViewController: UIViewController {
     }
     
     private func fetchProfileInfo() {
+        let username = user.username
+        let group = DispatchGroup()
+        
+        // Fetch Posts
+        group.enter()
+        DatabaseManager.shared.posts(for: user) { [weak self] (result) in
+            defer {
+                group.leave()
+            }
+            switch result {
+            case .success(let posts):
+                self?.posts = posts
+            case .failure(let error):
+                break
+            }
+        }
+        // Fetch Profile Header Info
         var profilePictureURL: URL?
         var buttonType: ProfileButtonType = .edit
         var followers = 0
@@ -65,7 +85,6 @@ class ProfileViewController: UIViewController {
         var name: String?
         var bio: String?
         
-        let group = DispatchGroup()
         
         // Counts (post, follower, following)
         group.enter()
@@ -100,6 +119,9 @@ class ProfileViewController: UIViewController {
             group.enter()
             DatabaseManager.shared.isFollowing(
                 targetUsername: user.username) { (isFollowing) in
+                defer {
+                    group.leave()
+                }
                 buttonType = .follow(isFollowing: isFollowing)
             }
             
@@ -200,7 +222,7 @@ extension ProfileViewController {
 
 extension ProfileViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 30
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -211,7 +233,7 @@ extension ProfileViewController: UICollectionViewDataSource {
             fatalError()
         }
         
-        cell.configure(with: UIImage(named: "story1"))
+        cell.configure(with: URL(string:posts[indexPath.row].postURLString))
         
         return cell
     }
@@ -240,9 +262,9 @@ extension ProfileViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
-//        let post = posts[indexPath.row]
-//        let vc = PostViewController(post: post)
-//        navigationController?.pushViewController(vc, animated: true)
+        let post = posts[indexPath.row]
+        let vc = PostViewController(post: post)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
