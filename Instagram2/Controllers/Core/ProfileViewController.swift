@@ -188,6 +188,7 @@ extension ProfileViewController: UICollectionViewDataSource {
             name: "Roy Park"
         )
         headerView.configure(with: viewModel)
+        headerView.countContainerView.delegate = self
         return headerView
     }
 }
@@ -201,4 +202,32 @@ extension ProfileViewController: UICollectionViewDelegate {
 //        let vc = PostViewController(post: post)
 //        navigationController?.pushViewController(vc, animated: true)
     }
+}
+
+extension ProfileViewController: ProfileHeaderCountViewDelegate {
+    func profileHeaderCountViewDidTapPosts(_ containerView: ProfileHeaderCountView) {
+        
+    }
+    
+    func profileHeaderCountViewDidTapFollowers(_ containerView: ProfileHeaderCountView) {
+        
+    }
+    
+    func profileHeaderCountViewDidTapFollowing(_ containerView: ProfileHeaderCountView) {
+        
+    }
+    
+    func profileHeaderCountViewDidTapEditProfile(_ containerView: ProfileHeaderCountView) {
+        
+    }
+    
+    func profileHeaderCountViewDidTapFollow(_ containerView: ProfileHeaderCountView) {
+        
+    }
+    
+    func profileHeaderCountViewDidTapUnfollow(_ containerView: ProfileHeaderCountView) {
+        
+    }
+    
+    
 }

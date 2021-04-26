@@ -19,7 +19,7 @@ class ProfileHeaderCollectionReusableView: UICollectionReusableView {
         return imageView
     }()
     
-    private let countContainerView = ProfileHeaderCountView()
+    public let countContainerView = ProfileHeaderCountView()
     
     private let bioLabel: UILabel = {
         let label = UILabel()
