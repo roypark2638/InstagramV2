@@ -42,6 +42,7 @@ class ProfileViewController: UIViewController {
         title = user.username
         configureNavigationBar()
         configureCollectionView()
+        fetchProfileInfo()
     }
     
     override func viewDidLayoutSubviews() {
@@ -51,6 +52,24 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    private func fetchProfileInfo() {
+        // Counts (post, follower, following)
+        
+        // Bio, name
+        
+        // Profile picture url
+        StorageManager.shared.profilePictureURL(for: user.username) { (url) in
+            guard let url = url else { return }
+        }
+        
+        // if profile is not for current user, get follow state
+        if !isCurrentUser {
+            // get follow state
+            
+        }
+        
     }
     
     private func configureNavigationBar() {
@@ -158,7 +177,17 @@ extension ProfileViewController: UICollectionViewDataSource {
               ) as? ProfileHeaderCollectionReusableView else {
             return UICollectionReusableView()
         }
-//        headerView.configure(with: ProfileHeaderViewModel)
+        let viewModel = ProfileHeaderViewModel(
+            profilePictureURL: nil,
+            followerCount: 100,
+            followingCount: 50,
+            postCount: 30,
+            buttonType: self.isCurrentUser ? .edit : .follow(isFollowing: true),
+            bio: "This is my first profile and hard coded.",
+            username: "asdf",
+            name: "Roy Park"
+        )
+        headerView.configure(with: viewModel)
         return headerView
     }
 }
