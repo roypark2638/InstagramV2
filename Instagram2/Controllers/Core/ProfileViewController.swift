@@ -20,6 +20,8 @@ class ProfileViewController: UIViewController {
         return user.username.lowercased() == UserDefaults.standard.string(forKey: "username")?.lowercased() ?? ""
     }
     
+    private var collectionView: UICollectionView?
+    
     // MARK: - Init
     
     init(user: User) {
@@ -39,6 +41,12 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = user.username
         configureNavigationBar()
+        configureCollectionView()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        collectionView?.frame = view.bounds
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,5 +68,108 @@ class ProfileViewController: UIViewController {
         let vc = SettingsViewController()
         let nav = UINavigationController(rootViewController: vc)
         present(nav, animated: true, completion: nil)
+    }
+}
+
+extension ProfileViewController {
+    fileprivate func configureCollectionView() {
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout:
+                UICollectionViewCompositionalLayout(sectionProvider: { (index, _) -> NSCollectionLayoutSection? in
+                    
+                    let item = NSCollectionLayoutItem(
+                        layoutSize:
+                            NSCollectionLayoutSize(
+                                widthDimension: .fractionalWidth(1),
+                                heightDimension: .fractionalHeight(1))
+                    )
+                    
+                    item.contentInsets = NSDirectionalEdgeInsets(
+                        top: 1,
+                        leading: 1,
+                        bottom: 1,
+                        trailing: 1
+                    )
+                    
+                    let group = NSCollectionLayoutGroup.horizontal(
+                        layoutSize: NSCollectionLayoutSize(
+                            widthDimension: .fractionalWidth(1),
+                            heightDimension: .fractionalWidth(0.33)),
+                        subitem: item,
+                        count: 3
+                    )
+                
+                    let section = NSCollectionLayoutSection(group: group)
+                    
+                    
+                    section.boundarySupplementaryItems = [
+                        NSCollectionLayoutBoundarySupplementaryItem(
+                            layoutSize: NSCollectionLayoutSize(
+                                widthDimension: .fractionalWidth(1),
+                                heightDimension: .fractionalWidth(0.7)),
+                            elementKind: UICollectionView.elementKindSectionHeader,
+                            alignment: .top
+                        )
+                    ]
+                    return section
+                })
+        )
+        collectionView.register(
+            PhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
+        collectionView.register(
+            ProfileHeaderCollectionReusableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier)
+        collectionView.backgroundColor = .systemBackground
+        view.addSubview(collectionView)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        self.collectionView = collectionView
+    }
+}
+
+extension ProfileViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 30
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: PhotoCollectionViewCell.identifier,
+            for: indexPath
+        ) as? PhotoCollectionViewCell else {
+            fatalError()
+        }
+        
+        cell.configure(with: UIImage(named: "story1"))
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: ProfileHeaderCollectionReusableView.identifier,
+                for: indexPath
+              ) as? ProfileHeaderCollectionReusableView else {
+            return UICollectionReusableView()
+        }
+//        headerView.configure(with: ProfileHeaderViewModel)
+        return headerView
+    }
+}
+
+
+extension ProfileViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+//        let post = posts[indexPath.row]
+//        let vc = PostViewController(post: post)
+//        navigationController?.pushViewController(vc, animated: true)
     }
 }
