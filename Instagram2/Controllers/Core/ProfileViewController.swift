@@ -270,7 +270,13 @@ extension ProfileViewController: UICollectionViewDelegate {
 
 extension ProfileViewController: ProfileHeaderCountViewDelegate {
     func profileHeaderCountViewDidTapPosts(_ containerView: ProfileHeaderCountView) {
-        
+        guard posts.count >= 18 else {
+            return
+        }
+        collectionView?.setContentOffset(CGPoint(
+                                            x: 0,
+                                            y: view.width * 0.7),
+                                         animated: true)
     }
     
     func profileHeaderCountViewDidTapFollowers(_ containerView: ProfileHeaderCountView) {
